@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const { createObjectCsvWriter } = require('csv-writer');
 const fs = require('fs');
 const path = require('path');
-const csvParser = require('csv-parser');
+const csv = require('csv-parser');
 
 const app = express();
 const PORT = 3000;
@@ -17,6 +17,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'rating.html'));
 });
 
+// Serve the recipe details page
+app.get('/recipeDetails', (req, res) => {
+    res.sendFile(path.join(__dirname, 'recipeDetails.html'));
+});
+
 // CSV file path
 const csvFilePath = path.join(__dirname, 'BakingRecipes.csv');
 
@@ -25,7 +30,7 @@ const checkRecipeExists = (recipeName) => {
     return new Promise((resolve, reject) => {
         const recipes = new Set(); // Use a Set for unique recipe names
         fs.createReadStream(csvFilePath)
-            .pipe(csvParser())
+            .pipe(csv())
             .on('data', (row) => {
                 recipes.add(row['Recipe Name']);
             })
@@ -45,7 +50,7 @@ const appendCommentToRecipe = (recipeName, rating, comment) => {
 
     return new Promise((resolve, reject) => {
         fs.createReadStream(csvFilePath)
-            .pipe(csvParser())
+            .pipe(csv())
             .on('data', (row) => {
                 if (row['Recipe Name'] === recipeName) {
                     recipeFound = true;
@@ -54,7 +59,7 @@ const appendCommentToRecipe = (recipeName, rating, comment) => {
                     row['Rating'] = row['Rating'] ? `${row['Rating']}, ${rating}` : rating; // Append rating
                     row['Comment'] = row['Comment'] ? `${row['Comment']} | ${comment}` : comment; // Append comment
                 }
-                updatedRecords.push(row); // Push all rows, including the updated one
+                updatedRecords.push(row);
             })
             .on('end', () => {
                 if (recipeFound) {
@@ -63,7 +68,7 @@ const appendCommentToRecipe = (recipeName, rating, comment) => {
                         path: csvFilePath,
                         header: [
                             { id: 'Recipe Name', title: 'Recipe Name' },
-                            { id: 'Ingredients', title: 'Ingredients' }, // Ensure this column is preserved
+                            { id: 'Ingredients', title: 'Ingredients' }, // Preserve the Ingredients column
                             { id: 'Rating', title: 'Rating' },
                             { id: 'Comment', title: 'Comment' }
                         ],
@@ -103,6 +108,39 @@ app.post('/submit-comment', async (req, res) => {
         console.error('Error handling comment submission:', error);
         res.json({ success: false, message: 'An error occurred.' });
     }
+});
+
+// Endpoint to get recipe details
+app.get('/get-recipe', (req, res) => {
+    const recipeName = req.query.name.trim().toLowerCase();
+    const results = [];
+
+    fs.createReadStream(csvFilePath)
+        .pipe(csv())
+        .on('data', (data) => {
+            // Normalize recipe name from CSV for comparison
+            const normalizedRecipeName = data['Recipe Name'] ? data['Recipe Name'].trim().toLowerCase() : '';
+            if (normalizedRecipeName === recipeName) {
+                results.push(data);
+            }
+        })
+        .on('end', () => {
+            if (results.length > 0) {
+                const recipe = results[0];
+                // Split the ratings and comments into arrays
+                const ratings = recipe.Rating ? recipe.Rating.split(', ') : []; // Split ratings
+                const comments = recipe.Comment ? recipe.Comment.split(' | ') : []; // Split comments
+                
+                res.json({
+                    name: recipe['Recipe Name'],
+                    ingredients: recipe.Ingredients.split(','), // Assuming ingredients are comma-separated
+                    ratings: ratings,
+                    comments: comments
+                });
+            } else {
+                res.json(null); // No recipe found
+            }
+        });
 });
 
 // Start the server
