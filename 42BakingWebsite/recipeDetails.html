@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #recipe {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Recipe Details</h1>
+    <input type="text" id="recipeName" placeholder="Enter recipe name">
+    <button onclick="fetchRecipeDetails()">Get Recipe</button>
+
+    <div id="recipe"></div>
+
+    <script>
+        async function fetchRecipeDetails() {
+            const recipeName = document.getElementById('recipeName').value;
+            const response = await fetch(`/get-recipe?name=${encodeURIComponent(recipeName)}`);
+            const data = await response.json();
+            const recipeDiv = document.getElementById('recipe');
+
+            if (data) {
+                recipeDiv.innerHTML = `
+                    <h2>${data.name}</h2>
+                    <h3>Ingredients:</h3>
+                    <p>${data.ingredients.join(', ')}</p>
+                    <h3>Ratings:</h3>
+                    <ul>
+                        ${data.ratings.map(rating => `<li>${rating}</li>`).join('')}
+                    </ul>
+                    <h3>Comments:</h3>
+                    <ul>
+                        ${data.comments.map(comment => `<li>${comment}</li>`).join('')}
+                    </ul>
+                `;
+            } else {
+                recipeDiv.innerHTML = `<p>Recipe not found.</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
