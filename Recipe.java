@@ -1,8 +1,4 @@
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.List;
+import jakarta.persistence.*;
 
 @Entity
 public class Recipe {
@@ -12,18 +8,17 @@ public class Recipe {
     private Long id;
 
     private String name;
-    
     private String ingredients;
 
-    // Constructors, Getters, and Setters
-
-    public Recipe() {}
+    public Recipe() {
+    }
 
     public Recipe(String name, String ingredients) {
         this.name = name;
         this.ingredients = ingredients;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
