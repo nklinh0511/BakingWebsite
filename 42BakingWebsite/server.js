@@ -14,8 +14,8 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname))); // Serve static files
 app.use(express.json());
 
-// Serve the rating.html file for the root route
-app.get('/', (req, res) => {
+// Serve the rating details page
+app.get('/rating', (req, res) => {
     res.sendFile(path.join(__dirname, 'rating.html'));
 });
 
@@ -177,8 +177,8 @@ app.get('/get-all-recipes', (req, res) => {
         });
 });
 
-// Serve recipes.html as a static file
-app.get('/recipes', (req, res) => {
+// Serve recipes.html as root
+app.get('/', (req, res) => {
     res.sendFile(__dirname + '/recipes.html');
 });
 
