@@ -4,6 +4,7 @@ const { createObjectCsvWriter } = require('csv-writer');
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
+const csvWriter = require('csv-writer').createObjectCsvWriter;
 
 const app = express();
 const PORT = 3000;
@@ -11,6 +12,7 @@ const PORT = 3000;
 // Middleware
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname))); // Serve static files
+app.use(express.json());
 
 // Serve the rating.html file for the root route
 app.get('/', (req, res) => {
@@ -86,6 +88,18 @@ const appendCommentToRecipe = (recipeName, rating, comment) => {
             });
     });
 };
+
+// Define headers for CSV writing
+const csvWriterInstance = csvWriter({
+    path: 'BakingRecipes.csv',
+    header: [
+        {id: 'Recipe Name', title: 'Recipe Name'},
+        {id: 'Ingredients', title: 'Ingredients'},
+        {id: 'Rating', title: 'Rating'},
+        {id: 'Comment', title: 'Comment'}
+    ],
+    append: true
+});
 
 // Endpoint to submit comments
 app.post('/submit-comment', async (req, res) => {
@@ -167,6 +181,40 @@ app.get('/get-all-recipes', (req, res) => {
 app.get('/recipes', (req, res) => {
     res.sendFile(__dirname + '/recipes.html');
 });
+
+// Route to upload a new recipe
+app.post('/upload-recipe', (req, res) => {
+    const { recipeName, ingredients, rating = '', comment = '' } = req.body;
+
+    // Ensure required fields are present
+    if (!recipeName || !ingredients) {
+        return res.status(400).json({ error: 'Recipe name and ingredients are required.' });
+    }
+
+    // Format the new recipe record
+    const newRecipe = {
+        'Recipe Name': recipeName,
+        'Ingredients': ingredients,
+        'Rating': rating,
+        'Comment': comment
+    };
+
+    // Append the new recipe to the CSV file
+    csvWriterInstance.writeRecords([newRecipe])
+        .then(() => {
+            res.status(200).json({ message: 'Recipe uploaded successfully!' });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: 'Failed to upload recipe.' });
+        });
+});
+
+// Serve uploadRecipe.html as a static file
+app.get('/upload', (req, res) => {
+    res.sendFile(path.join(__dirname, 'uploadRecipe.html'));
+});
+
 
 // Start the server
 app.listen(PORT, () => {
