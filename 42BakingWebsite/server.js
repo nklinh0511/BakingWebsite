@@ -215,6 +215,44 @@ app.get('/upload', (req, res) => {
     res.sendFile(path.join(__dirname, 'uploadRecipe.html'));
 });
 
+//
+app.get('/search-recipes', (req, res) => {
+    // Split input string by commas and trim whitespace around each ingredient
+    const ingredients = req.query.ingredient
+        .split(',')
+        .map(i => i.toLowerCase().trim());
+
+    const results = [];
+
+    fs.createReadStream('BakingRecipes.csv')
+        .pipe(csv())
+        .on('data', (row) => {
+            // Convert recipe ingredients to lowercase and split into an array
+            const recipeIngredients = row.Ingredients ? row.Ingredients.toLowerCase().split(',').map(i => i.trim()) : [];
+            
+            // Check if all specified ingredients are present in recipeIngredients
+            const containsAllIngredients = ingredients.every(ingredient => recipeIngredients.includes(ingredient));
+            
+            if (containsAllIngredients) {
+                const ratings = row.Rating ? row.Rating.split(', ') : [];
+                const comments = row.Comment ? row.Comment.split(' | ') : [];
+                
+                results.push({
+                    name: row['Recipe Name'],
+                    ingredients: recipeIngredients,
+                    ratings: ratings,
+                    comments: comments
+                });
+            }
+        })
+        .on('end', () => {
+            res.json(results); // Send filtered recipes back to client
+        });
+});
+
+
+// Serve the HTML page
+app.use(express.static('public')); // Assuming searchByIngredient.html is in the "public" folder
 
 // Start the server
 app.listen(PORT, () => {
