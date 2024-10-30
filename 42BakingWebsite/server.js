@@ -143,6 +143,31 @@ app.get('/get-recipe', (req, res) => {
         });
 });
 
+// Route to serve all recipes for display in recipes.html
+app.get('/get-all-recipes', (req, res) => {
+    const recipes = [];
+
+    fs.createReadStream('./BakingRecipes.csv')
+        .pipe(csv())
+        .on('data', (data) => {
+            const recipe = {
+                name: data['Recipe Name'],
+                ingredients: data.Ingredients ? data.Ingredients.split(',') : [],
+                ratings: data.Rating ? data.Rating.split(', ') : [],
+                comments: data.Comment ? data.Comment.split(' | ') : []
+            };
+            recipes.push(recipe);
+        })
+        .on('end', () => {
+            res.json(recipes);
+        });
+});
+
+// Serve recipes.html as a static file
+app.get('/recipes', (req, res) => {
+    res.sendFile(__dirname + '/recipes.html');
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
