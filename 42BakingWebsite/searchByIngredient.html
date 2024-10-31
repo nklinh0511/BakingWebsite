@@ -29,8 +29,21 @@
             color: #333;
         }
     </style>
+    <link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
+
+    <div>
+        <!-- navigation.html -->
+        <div style="display: flex; gap: 10px; padding: 10px; background-color: #f0f0f0;">
+        <a href="recipes.html"><button>Home (Recipes)</button></a>
+        <a href="recipeDetails.html"><button>Recipe Details</button></a>
+        <a href="rating.html"><button>Rate a Recipe</button></a>
+        <a href="uploadRecipe.html"><button>Upload Recipe</button></a>
+        <a href="searchByIngredient.html"><button>Search by Ingredient</button></a>
+    </div>
+
     <h1>Search Recipes by Ingredient</h1>
     <input type="text" id="ingredient" placeholder="Enter ingredient(s) (e.g., 'flour, strawberries')" size="50"><br>
     <button onclick="searchRecipes()">Search</button>
