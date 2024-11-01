@@ -3,6 +3,7 @@ import { useState } from "react";
 import SearchBox from "./SearchBox";
 
 const NavBar = () => {
+  //this is to test git
   const [openNavigation, setOpenNavigation] = useState(false);
 
   const handleClick = () => {
