@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Recipes by Ingredient</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #recipes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .recipe-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .recipe-card h3 {
+            margin: 0;
+            color: #333;
+        }
+    </style>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+
+    <div>
+        <!-- navigation.html -->
+        <div style="display: flex; gap: 10px; padding: 10px; background-color: #f0f0f0;">
+        <a href="recipes.html"><button>Home (Recipes)</button></a>
+        <a href="recipeDetails.html"><button>Recipe Details</button></a>
+        <a href="rating.html"><button>Rate a Recipe</button></a>
+        <a href="uploadRecipe.html"><button>Upload Recipe</button></a>
+        <a href="searchByIngredient.html"><button>Search by Ingredient</button></a>
+    </div>
+
+    <h1>Search Recipes by Ingredient</h1>
+    <input type="text" id="ingredient" placeholder="Enter ingredient(s) (e.g., 'flour, strawberries')" size="50"><br>
+    <button onclick="searchRecipes()">Search</button>
+
+    <div id="recipes"></div>
+
+    <script>
+        async function searchRecipes() {
+            const ingredient = document.getElementById('ingredient').value.trim();
+            const response = await fetch(`/search-recipes?ingredient=${encodeURIComponent(ingredient)}`);
+            const data = await response.json();
+            const recipesDiv = document.getElementById('recipes');
+            recipesDiv.innerHTML = '';
+
+            if (data.length > 0) {
+                data.forEach(recipe => {
+                    const card = document.createElement('div');
+                    card.classList.add('recipe-card');
+                    card.innerHTML = `
+                        <h3>${recipe.name}</h3>
+                        <p><strong>Ingredients:</strong> ${recipe.ingredients.join(', ')}</p>
+                        <p><strong>Ratings:</strong> ${recipe.ratings.join(', ')}</p>
+                        <p><strong>Comments:</strong> ${recipe.comments.join(' | ')}</p>
+                    `;
+                    recipesDiv.appendChild(card);
+                });
+            } else {
+                recipesDiv.innerHTML = '<p>No recipes found with that ingredient.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
