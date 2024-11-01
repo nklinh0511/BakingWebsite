@@ -125,34 +125,28 @@ app.post('/submit-comment', async (req, res) => {
 });
 
 // Endpoint to get recipe details
-app.get('/get-recipe', (req, res) => {
-    const recipeName = req.query.name.trim().toLowerCase();
+app.get('/get-recipes', (req, res) => {
+    const recipeName = req.query.name.toLowerCase(); // Convert to lowercase for case-insensitive search
     const results = [];
 
-    fs.createReadStream(csvFilePath)
+    fs.createReadStream('BakingRecipes.csv')
         .pipe(csv())
         .on('data', (data) => {
-            // Normalize recipe name from CSV for comparison
-            const normalizedRecipeName = data['Recipe Name'] ? data['Recipe Name'].trim().toLowerCase() : '';
-            if (normalizedRecipeName === recipeName) {
+            if (data['Recipe Name'].toLowerCase().includes(recipeName)) { // Check for partial match
                 results.push(data);
             }
         })
         .on('end', () => {
             if (results.length > 0) {
-                const recipe = results[0];
-                // Split the ratings and comments into arrays
-                const ratings = recipe.Rating ? recipe.Rating.split(', ') : []; // Split ratings
-                const comments = recipe.Comment ? recipe.Comment.split(' | ') : []; // Split comments
-                
-                res.json({
+                const recipes = results.map(recipe => ({
                     name: recipe['Recipe Name'],
                     ingredients: recipe.Ingredients.split(','), // Assuming ingredients are comma-separated
-                    ratings: ratings,
-                    comments: comments
-                });
+                    ratings: recipe.Rating ? recipe.Rating.split(', ') : [], // Split ratings
+                    comments: recipe.Comment ? recipe.Comment.split(' | ') : [] // Split comments
+                }));
+                res.json(recipes);
             } else {
-                res.json(null); // No recipe found
+                res.json(null); // No recipes found
             }
         });
 });
