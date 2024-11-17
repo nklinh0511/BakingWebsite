@@ -1,6 +1,7 @@
 package com.connectingfrontandback.recipeStuff.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.connectingfrontandback.recipeStuff.model.Recipe;
@@ -35,8 +36,8 @@ public class RecipeController {
         return recipeService.searchByIngredient(ingredient);
     }
 
-    @PostMapping("/add")  // Change from @GetMapping to @PostMapping
+    @PostMapping("/add") 
     public Recipe addRecipe(@RequestBody Recipe recipe) {
-        return recipeService.addRecipe(recipe); // Assuming addRecipe is a method in your RecipeService
+        return recipeService.addRecipe(recipe);
     }
 }
