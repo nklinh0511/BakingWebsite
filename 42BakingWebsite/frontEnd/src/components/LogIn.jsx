@@ -1,9 +1,8 @@
 import {useState} from 'react'
-import {useHistory} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 const LogIn = ({alreadyReg}) => {
     const [isLogin, setIsLogin] = useState(alreadyReg);
-    console.log(isLogin);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
@@ -24,7 +23,7 @@ const LogIn = ({alreadyReg}) => {
                 const data = await response.json();
                 console.log('User created:', data);
                 const redirectTo = data.redirectUrl || '/';
-                history.push(redirectTo);
+                navigate(redirectTo); 
             } else {
                 console.error('Error:', response.statusText);
             }

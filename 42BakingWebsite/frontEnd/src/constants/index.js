@@ -40,6 +40,6 @@ export const loginNav = [
     {
       id: "0",
       title: "Recipe Name",
-      text: "Lets users quickly find answers to their questions without having to search through multiple sources.",
+      instruction: "Chop up onions, tomatoes, and carrots.",
     }
   ];
