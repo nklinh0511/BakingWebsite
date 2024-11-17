@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session'); // Add this line to import express-session
 const bodyParser = require('body-parser');
 const { createObjectCsvWriter } = require('csv-writer');
 const fs = require('fs');
@@ -13,8 +14,17 @@ const PORT = 3000;
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname))); // Serve static files
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Serve the rating details page
+// Use session middleware
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // For development, use 'secure: true' in production with HTTPS
+}));
+
+// Serve the rating.html file for the root route
 app.get('/rating', (req, res) => {
     res.sendFile(path.join(__dirname, 'rating.html'));
 });
@@ -125,6 +135,7 @@ app.post('/submit-comment', async (req, res) => {
 });
 
 // Endpoint to get recipe details
+// Get recipe details based on the name from BakingRecipes.csv
 app.get('/get-recipes', (req, res) => {
     const recipeName = req.query.name.toLowerCase(); // Convert to lowercase for case-insensitive search
     const results = [];
@@ -132,22 +143,25 @@ app.get('/get-recipes', (req, res) => {
     fs.createReadStream('BakingRecipes.csv')
         .pipe(csv())
         .on('data', (data) => {
-            if (data['Recipe Name'].toLowerCase().includes(recipeName)) { // Check for partial match
-                results.push(data);
+            if (data['Recipe Name'].toLowerCase() === recipeName) { // Exact match
+                results.push({
+                    name: data['Recipe Name'],
+                    ingredients: data.Ingredients ? data.Ingredients.split(',') : [],
+                    ratings: data.Rating ? data.Rating.split(', ') : [],
+                    comments: data.Comment ? data.Comment.split(' | ') : []
+                });
             }
         })
         .on('end', () => {
             if (results.length > 0) {
-                const recipes = results.map(recipe => ({
-                    name: recipe['Recipe Name'],
-                    ingredients: recipe.Ingredients.split(','), // Assuming ingredients are comma-separated
-                    ratings: recipe.Rating ? recipe.Rating.split(', ') : [], // Split ratings
-                    comments: recipe.Comment ? recipe.Comment.split(' | ') : [] // Split comments
-                }));
-                res.json(recipes);
+                res.json(results);
             } else {
                 res.json(null); // No recipes found
             }
+        })
+        .on('error', (err) => {
+            console.error('Error reading BakingRecipes.csv:', err);
+            res.json({ success: false, message: 'Error retrieving recipe details' });
         });
 });
 
@@ -171,8 +185,8 @@ app.get('/get-all-recipes', (req, res) => {
         });
 });
 
-// Serve recipes.html as root
-app.get('/', (req, res) => {
+// Serve recipes.html as a root
+app.get('/recipes', (req, res) => {
     res.sendFile(__dirname + '/recipes.html');
 });
 
@@ -244,9 +258,178 @@ app.get('/search-recipes', (req, res) => {
         });
 });
 
+// LOGIN FUNCTIONALITY
+//** ** ** ** ** ** ** *** ** ** ** ** ** ** ** */
+// Path to user login CSV file
+const userCsvFilePath = path.join(__dirname, 'UserLogin.csv');
+
+// Function to check user credentials
+const checkUserCredentials = (username, password) => {
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(userCsvFilePath)
+            .pipe(csv())
+            .on('data', (row) => {
+                if (row.Username === username && row.Password === password) {
+                    resolve(true); // Credentials match
+                }
+            })
+            .on('end', () => resolve(false)) // No match found
+            .on('error', (error) => reject(error));
+    });
+};
+
+// Function to register a new user
+const registerUser = (username, password) => {
+    const csvWriterInstance = createObjectCsvWriter({
+        path: userCsvFilePath,
+        header: [
+            { id: 'Username', title: 'Username' },
+            { id: 'Password', title: 'Password' }
+        ],
+        append: true
+    });
+
+    return csvWriterInstance.writeRecords([{ Username: username, Password: password }]);
+};
+
+// Endpoint for user login
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Validate username and password (replace with your actual logic)
+    if (!username || !password) {
+        return res.json({ success: false, message: 'Username and password are required.' });
+    }
+
+    let validUser = false;
+
+    fs.createReadStream(userCsvFilePath)
+        .pipe(csv())
+        .on('data', (row) => {
+            if (row.Username === username && row.Password === password) {
+                validUser = true;
+            }
+        })
+        .on('end', () => {
+            if (validUser) {
+                req.session.username = username;  // Set the username in the session
+                res.json({ success: true, message: 'Login successful' });
+            } else {
+                res.json({ success: false, message: 'Invalid username or password' });
+            }
+        })
+        .on('error', (err) => {
+            console.error('Error reading UserLogin.csv:', err);
+            res.json({ success: false, message: 'An error occurred during login' });
+        });
+});
+
+// Endpoint for user registration
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Username and password are required.' });
+    }
+
+    try {
+        await registerUser(username, password);
+        res.json({ success: true, message: 'Registration successful!' });
+    } catch (error) {
+        console.error('Error during registration:', error);
+        res.status(500).json({ success: false, message: 'An error occurred during registration.' });
+    }
+});
+
+// Serve the login.html file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+/** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
+
+app.get('/get-favorite-recipes', (req, res) => {
+    const username = req.session.username;  // Access the username from session
+
+    if (!username) {
+        return res.json({ success: false, message: 'User not logged in.' });
+    }
+
+    const favoriteRecipes = [];
+    fs.createReadStream(userCsvFilePath)
+        .pipe(csv())
+        .on('data', (row) => {
+            if (row.Username === username && row.FavoriteRecipes) {
+                // Split favorite recipes into an array
+                favoriteRecipes.push(...row.FavoriteRecipes.split(','));
+            }
+        })
+        .on('end', () => {
+            if (favoriteRecipes.length > 0) {
+                res.json({ success: true, favoriteRecipes });
+            } else {
+                res.json({ success: false, message: 'No favorite recipes found.' });
+            }
+        })
+        .on('error', (err) => {
+            console.error('Error reading UserLogin.csv:', err);
+            res.json({ success: false, message: 'An error occurred while fetching favorite recipes.' });
+        });
+});
+
+app.post('/add-favorite-recipe', (req, res) => {
+    const { recipeName } = req.body;
+    const username = req.session.username; // Get the logged-in user's username from the session
+
+    if (!username) {
+        return res.json({ success: false, message: 'User not logged in' });
+    }
+
+    const users = [];
+    let userFound = false;
+
+    fs.createReadStream('UserLogin.csv')
+        .pipe(csv())
+        .on('data', (row) => {
+            if (row.Username === username) {
+                userFound = true;
+                row.FavoriteRecipes = row.FavoriteRecipes
+                    ? `${row.FavoriteRecipes},${recipeName}`
+                    : recipeName;
+            }
+            users.push(row);
+        })
+        .on('end', () => {
+            if (userFound) {
+                const csvWriter = createObjectCsvWriter({
+                    path: 'UserLogin.csv',
+                    header: [
+                        { id: 'Username', title: 'Username' },
+                        { id: 'Password', title: 'Password' },
+                        { id: 'FavoriteRecipes', title: 'FavoriteRecipes' }
+                    ],
+                    append: false
+                });
+
+                csvWriter.writeRecords(users)
+                    .then(() => res.json({ success: true }))
+                    .catch((error) => {
+                        console.error('Error writing UserLogin.csv:', error);
+                        res.json({ success: false, message: 'Failed to update favorites.' });
+                    });
+            } else {
+                res.json({ success: false, message: 'User not found.' });
+            }
+        })
+        .on('error', (error) => {
+            console.error('Error reading UserLogin.csv:', error);
+            res.json({ success: false, message: 'An error occurred.' });
+        });
+});
+/** ** *** *  * **** *** * *** * * * ***** * * * * * *** * ***** * */
 
 // Serve the HTML page
 app.use(express.static('public')); // Assuming searchByIngredient.html is in the "public" folder
+app.use(express.static(path.join(__dirname))); // Serve static files
 
 // Start the server
 app.listen(PORT, () => {
