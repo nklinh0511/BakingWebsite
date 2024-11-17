@@ -14,13 +14,19 @@
         #recipe {
             margin-top: 20px;
         }
+        .recipe-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
 
-    <div>
-        <!-- navigation.html -->
-        <div style="display: flex; gap: 10px; padding: 10px; background-color: #f0f0f0;">
+    <!-- Navigation Bar -->
+    <div style="display: flex; gap: 10px; padding: 10px; background-color: #f0f0f0;">
         <a href="recipes.html"><button>Home (Recipes)</button></a>
         <a href="recipeDetails.html"><button>Recipe Details</button></a>
         <a href="rating.html"><button>Rate a Recipe</button></a>
@@ -37,26 +43,35 @@
     <script>
         async function fetchRecipeDetails() {
             const recipeName = document.getElementById('recipeName').value;
-            const response = await fetch(`/get-recipe?name=${encodeURIComponent(recipeName)}`);
+            const response = await fetch(`/get-recipes?name=${encodeURIComponent(recipeName)}`);
             const data = await response.json();
             const recipeDiv = document.getElementById('recipe');
 
-            if (data) {
-                recipeDiv.innerHTML = `
-                    <h2>${data.name}</h2>
-                    <h3>Ingredients:</h3>
-                    <p>${data.ingredients.join(', ')}</p>
-                    <h3>Ratings:</h3>
-                    <ul>
-                        ${data.ratings.map(rating => `<li>${rating}</li>`).join('')}
-                    </ul>
-                    <h3>Comments:</h3>
-                    <ul>
-                        ${data.comments.map(comment => `<li>${comment}</li>`).join('')}
-                    </ul>
-                `;
+            // Clear previous content
+            recipeDiv.innerHTML = '';
+
+            if (data && data.length > 0) {
+                // Display each matching recipe in a card
+                data.forEach(recipe => {
+                    const recipeCard = `
+                        <div class="recipe-card">
+                            <h2>${recipe.name}</h2>
+                            <h3>Ingredients:</h3>
+                            <p>${recipe.ingredients.join(', ')}</p>
+                            <h3>Ratings:</h3>
+                            <ul>
+                                ${recipe.ratings.map(rating => `<li>${rating}</li>`).join('')}
+                            </ul>
+                            <h3>Comments:</h3>
+                            <ul>
+                                ${recipe.comments.map(comment => `<li>${comment}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    recipeDiv.innerHTML += recipeCard;
+                });
             } else {
-                recipeDiv.innerHTML = `<p>Recipe not found.</p>`;
+                recipeDiv.innerHTML = `<p>No recipes found with that name.</p>`;
             }
         }
     </script>
