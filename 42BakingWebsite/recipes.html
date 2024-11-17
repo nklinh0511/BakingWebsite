@@ -53,7 +53,7 @@
         <a href="rating.html"><button>Rate a Recipe</button></a>
         <a href="uploadRecipe.html"><button>Upload Recipe</button></a>
         <a href="searchByIngredient.html"><button>Search by Ingredient</button></a>
-    </div>
+        <a href="favoriteRecipes.html"><button>Favorite Recipes</button></a>
 
     <h1>Recipe Collection</h1>
     <div class="recipe-container" id="recipeContainer"></div>
@@ -78,11 +78,40 @@
                         <ul>${recipe.comments.map(comment => `<li>${comment}</li>`).join('')}</ul>
                     </div>
                 `;
+
+                // Create the "Add to Favorites" button dynamically
+                const button = document.createElement('button');
+                button.textContent = 'Add to Favorites';
+                button.onclick = () => addToFavorites(recipe.name); // Pass the recipe name dynamically
+                card.appendChild(button);
+
                 container.appendChild(card);
             });
         }
 
         loadRecipes();
+
+        async function addToFavorites(recipeName) {
+            const username = "currentLoggedInUsername"; // Get the logged-in user's username
+            try {
+                const response = await fetch('/add-favorite-recipe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recipeName, username })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert(`${recipeName} has been added to your favorites!`);
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error adding to favorites:', error);
+                alert('An error occurred while adding the recipe to favorites.');
+            }
+        }
+
     </script>
 </body>
 </html>

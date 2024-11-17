@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <script>
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // Redirect to recipes.html after successful login
+                    window.location.href = '/recipes.html';
+                } else {
+                    alert(data.message); // Show error message
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                alert('An error occurred during login. Please try again.');
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                alert(data.message); // Show registration success or error message
+            } catch (error) {
+                console.error('Error during registration:', error);
+                alert('An error occurred during registration. Please try again.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Login Page</h1>
+    <form id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required><br><br>
+        <button onclick="handleLogin(event)">Login</button>
+        <button onclick="handleRegister(event)">Register</button>
+    </form>
+</body>
+</html>
