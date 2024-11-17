@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import {useHistory} from 'react-router-dom'
 
 const LogIn = ({alreadyReg}) => {
     const [isLogin, setIsLogin] = useState(alreadyReg);
@@ -12,7 +13,7 @@ const LogIn = ({alreadyReg}) => {
         const userData = { username, password, email };
 
         try {
-            const response = await fetch('http://localhost:8080/api/users', {
+            const response = await fetch('http://localhost:8080/student/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -22,6 +23,8 @@ const LogIn = ({alreadyReg}) => {
             if (response.ok) {
                 const data = await response.json();
                 console.log('User created:', data);
+                const redirectTo = data.redirectUrl || '/';
+                history.push(redirectTo);
             } else {
                 console.error('Error:', response.statusText);
             }
