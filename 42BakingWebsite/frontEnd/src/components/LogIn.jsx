@@ -9,7 +9,7 @@ const LogIn = ({alreadyReg}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const userData = { name, email };
+        const userData = { username, password, email };
 
         try {
             const response = await fetch('http://localhost:8080/api/users', {
