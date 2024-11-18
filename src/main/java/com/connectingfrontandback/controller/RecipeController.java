@@ -7,6 +7,9 @@ import com.connectingfrontandback.model.Recipe;
 import com.connectingfrontandback.service.RecipeService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/recipes")
@@ -39,4 +42,10 @@ public class RecipeController {
     public Recipe addRecipe(@RequestBody Recipe recipe) {
         return recipeService.addRecipe(recipe);
     }
+
+    @GetMapping("/getAllRecipes")
+    public List<Recipe> getMethodName() {
+        return recipeService.getAllRecipes();
+    }
+    
 }

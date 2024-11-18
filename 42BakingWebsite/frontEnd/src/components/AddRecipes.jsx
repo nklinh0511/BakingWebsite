@@ -35,7 +35,7 @@ function RecipeForm() {
 
   // Fetch the list of all recipes when the component mounts
   useEffect(() => {
-    fetch('http://localhost:8080/recipes')  // Assuming you have an endpoint to get all recipes
+    fetch('http://localhost:8080/recipes/getAllRecipes')  // Assuming you have an endpoint to get all recipes
       .then(response => response.json())
       .then(data => setRecipes(data))  // Set state with list of recipes
       .catch(error => console.error('Error fetching recipes:', error));
