@@ -1,4 +1,4 @@
-package com.connectingfrontandback.recipeStuff.model;
+package com.connectingfrontandback.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

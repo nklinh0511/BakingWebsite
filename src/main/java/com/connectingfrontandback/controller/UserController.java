@@ -3,6 +3,7 @@ package com.connectingfrontandback.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -14,16 +15,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.connectingfrontandback.model.User;
-import com.connectingfrontandback.service.StudentService;
+import com.connectingfrontandback.service.LoginService;
+import com.connectingfrontandback.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/student")
-public class StudentController {
+public class UserController {
 
     @Autowired
-    public StudentService studentService;
+    public UserService studentService;
+
+    @Autowired
+    public LoginService loginService;
 
     @PostConstruct
     public void init() {
@@ -43,14 +48,17 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
-    @GetMapping("/testDatabase")
-    public String testDatabase() {
-        try {
-            long count = studentService.getAllStudents().size(); // Example database query
-            return "Database connected! Total students: " + count;
-        } catch (Exception e) {
-            return "Database connection failed: " + e.getMessage();
+    // Called from loginService 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User loginRequest) {
+        Optional<User> user = loginService.validateLogin(loginRequest.getUsername(), loginRequest.getPassword());
+    
+        if (user.isPresent()) {
+            return ResponseEntity.ok("Login successful!"); // Customize response as needed
+        } else {
+            return ResponseEntity.status(401).body("Invalid username or password.");
         }
     }
+    
 
 }

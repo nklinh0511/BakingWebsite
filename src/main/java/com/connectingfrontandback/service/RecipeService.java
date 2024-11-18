@@ -1,12 +1,12 @@
-package com.connectingfrontandback.recipeStuff.service;
+package com.connectingfrontandback.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.connectingfrontandback.recipeStuff.model.Recipe;
-import com.connectingfrontandback.recipeStuff.repository.RecipeRepository;
+import com.connectingfrontandback.model.Recipe;
+import com.connectingfrontandback.repository.RecipeRepository;
 
 @Service
 public class RecipeService {
