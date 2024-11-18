@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.connectingfrontandback.model.Recipe;
-import com.connectingfrontandback.model.User;
 import com.connectingfrontandback.repository.RecipeRepository;
 
 @Service
