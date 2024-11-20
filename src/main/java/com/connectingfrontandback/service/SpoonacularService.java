@@ -1,4 +1,4 @@
-package main.java.com.connectingfrontandback.recipeStuff.service;
+package com.connectingfrontandback.service;
 
 import org.springframework.stereotype.Service;
 import java.io.IOException;
