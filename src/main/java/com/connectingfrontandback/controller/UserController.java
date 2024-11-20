@@ -48,17 +48,16 @@ public class UserController {
         return studentService.getAllStudents();
     }
 
-    // Called from loginService 
+    // Called from loginService
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User loginRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest) {
         Optional<User> user = loginService.validateLogin(loginRequest.getUsername(), loginRequest.getPassword());
-    
+
         if (user.isPresent()) {
-            return ResponseEntity.ok("Login successful!"); // Customize response as needed
+            return ResponseEntity.ok(Map.of("message", "Login successful!"));
         } else {
-            return ResponseEntity.status(401).body("Invalid username or password.");
+            return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password."));
         }
     }
-    
 
 }
