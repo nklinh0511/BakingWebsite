@@ -24,8 +24,7 @@ const LogIn = ({alreadyReg}) => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log('User created:', data);
-                    const redirectTo = data.redirectUrl || '/';
-                    navigate(redirectTo); 
+                    navigate('/'); 
                 } else {
                     console.error('Error:', response.statusText);
                 }
@@ -39,7 +38,8 @@ const LogIn = ({alreadyReg}) => {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data);
+                    console.log("Logged In!");
+                    navigate('/'); 
                 } else {
                     console.error('Error:', response.statusText);
                 }
