@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.connectingfrontandback.model.User;
 
-public interface StudentService {
+public interface UserService {
     public User saveStudent(User student);
     public List<User> getAllStudents();
 }

@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.connectingfrontandback.model.User;
-import com.connectingfrontandback.repository.StudentRepository;
+import com.connectingfrontandback.repository.UserRepository;
 
 @Service 
-public class StudentServiceImp implements StudentService {
+public class UserServiceImp implements UserService {
 
     @Autowired
-    private StudentRepository studentRepository; 
+    private UserRepository studentRepository; 
 
     @Override
     public User saveStudent(User student) {

@@ -1,12 +1,15 @@
-package com.connectingfrontandback.recipeStuff.controller;
+package com.connectingfrontandback.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.connectingfrontandback.recipeStuff.model.Recipe;
-import com.connectingfrontandback.recipeStuff.service.RecipeService;
+import com.connectingfrontandback.model.Recipe;
+import com.connectingfrontandback.service.RecipeService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/recipes")
@@ -35,8 +38,14 @@ public class RecipeController {
         return recipeService.searchByIngredient(ingredient);
     }
 
-    @PostMapping("/add")  // Change from @GetMapping to @PostMapping
+    @PostMapping("/add") 
     public Recipe addRecipe(@RequestBody Recipe recipe) {
-        return recipeService.addRecipe(recipe); // Assuming addRecipe is a method in your RecipeService
+        return recipeService.addRecipe(recipe);
     }
+
+    @GetMapping("/getAllRecipes")
+    public List<Recipe> getMethodName() {
+        return recipeService.getAllRecipes();
+    }
+    
 }
