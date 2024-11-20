@@ -30,7 +30,7 @@ const AddRecipes = () => {
       // Prepare the recipe data
       const recipeData = {
         name: recipeName,
-        ingredients: ingredients.split(',').map((item) => item.trim()), // Split ingredients by commas
+        ingredients: ingredients, // Split ingredients by commas
       };
   
       try {

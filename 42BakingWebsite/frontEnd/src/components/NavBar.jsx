@@ -5,6 +5,7 @@ import SearchBox from "./SearchBox";
 const NavBar = () => {
   //this is to test git
   const [openNavigation, setOpenNavigation] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
   const handleClick = () => {
     if (!openNavigation) return;
