@@ -6,27 +6,45 @@ const LogIn = ({alreadyReg}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const userData = { username, password, email };
 
         try {
-            const response = await fetch('http://localhost:8080/student/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-            if (response.ok) {
-                const data = await response.json();
-                console.log('User created:', data);
-                const redirectTo = data.redirectUrl || '/';
-                navigate(redirectTo); 
+            if (!isLogin) {
+                const response = await fetch('http://localhost:8080/student/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData),
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('User created:', data);
+                    const redirectTo = data.redirectUrl || '/';
+                    navigate(redirectTo); 
+                } else {
+                    console.error('Error:', response.statusText);
+                }
             } else {
-                console.error('Error:', response.statusText);
+                const response = await fetch('http://localhost:8080/student/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData),
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                } else {
+                    console.error('Error:', response.statusText);
+                }
             }
+            
         } catch (error) {
             console.error('Error:', error);
         }
