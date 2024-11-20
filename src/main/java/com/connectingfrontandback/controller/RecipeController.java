@@ -30,7 +30,7 @@ public class RecipeController {
         return recipeService.searchByName(name);
     }
 
-    @GetMapping("/searchByIngredient")
+    @GetMapping("/searchByIngredient") 
     public List<Recipe> searchRecipesByIngredient(@RequestParam String ingredient) {
         if (ingredient == null || ingredient.trim().isEmpty()) {
             throw new IllegalArgumentException("Ingredient parameter cannot be null or empty");
