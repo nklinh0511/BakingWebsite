@@ -16,7 +16,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User saveStudent(User student) {
-        System.out.println("Saving student: " + student);
+        //saves user information
         return studentRepository.save(student);  
     }
 

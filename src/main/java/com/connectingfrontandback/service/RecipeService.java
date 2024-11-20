@@ -16,7 +16,7 @@ public class RecipeService {
 
     //searches a user entered recipe by name
     public List<Recipe> searchByName(String name) {
-        return recipeRepository.findByNameContainingIgnoreCase(name);
+        return recipeRepository.findByName(name);
     }
 
     //searches a user enteered recipe by ingredient

@@ -30,13 +30,9 @@ public class UserController {
     @Autowired
     public LoginService loginService;
 
-    @PostConstruct
-    public void init() {
-        System.out.println("StudentController initialized!");
-    }
-
     @PostMapping("/add")
     public ResponseEntity<Map<String, String>> add(@RequestBody User student) {
+        //called from UserService
         studentService.saveStudent(student);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Student added successfully");
@@ -45,12 +41,16 @@ public class UserController {
 
     @GetMapping("/getAll")
     public List<User> getAllStudents() {
+
+        //called from UserService
         return studentService.getAllStudents();
     }
 
-    // Called from loginService
+    
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest) {
+
+        // Called from loginService
         Optional<User> user = loginService.validateLogin(loginRequest.getUsername(), loginRequest.getPassword());
 
         if (user.isPresent()) {
