@@ -50,12 +50,13 @@ public class RecipeController {
         List<Recipe> dbResults = recipeService.searchByIngredient(ingredient);
         if (!dbResults.isEmpty()) {
             return dbResults; // Return database results if found
-        }
+        } 
 
-        // Query the external API if no database results
+        // Querys the external API if no database results
         return apiService.searchRecipesByIngredient(ingredient);
     }
 
+    // Adds user entered data to database - calls addRecipe from recipeservice
     @PostMapping("/add")
     public Recipe addRecipe(@RequestBody Recipe recipe) {
         return recipeService.addRecipe(recipe);

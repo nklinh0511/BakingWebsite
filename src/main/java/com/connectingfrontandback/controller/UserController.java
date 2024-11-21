@@ -5,13 +5,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.connectingfrontandback.model.AddRecipeRequest;
+import com.connectingfrontandback.model.ApiResponse;
+import com.connectingfrontandback.model.FavoriteRecipes;
 import com.connectingfrontandback.model.User;
 import com.connectingfrontandback.service.LoginService;
 import com.connectingfrontandback.service.UserService;
@@ -56,6 +62,36 @@ public class UserController {
         } else {
             return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password."));
         }
+    }
+
+        @GetMapping("/get-favorite-recipes")
+    public ResponseEntity<?> getFavoriteRecipes(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(false, "User not logged in"));
+        }
+
+        List<String> favoriteRecipes = UserService.getFavoriteRecipes(username);
+        if (!favoriteRecipes.isEmpty()) {
+            return ResponseEntity.ok(new FavoriteRecipes(true, favoriteRecipes));
+        }
+        return ResponseEntity.ok(new ApiResponse(false, "No favorite recipes found"));
+    }
+
+    @PostMapping("/add-favorite-recipe")
+    public ResponseEntity<?> addFavoriteRecipe(@RequestBody AddRecipeRequest addRecipeRequest, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(false, "User not logged in"));
+        }
+
+        if (UserService.addFavoriteRecipe(username, addRecipeRequest.getRecipeName())) {
+            return ResponseEntity.ok(new ApiResponse(true, "Recipe added successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(false, "Failed to add recipe"));
     }
 
 }
