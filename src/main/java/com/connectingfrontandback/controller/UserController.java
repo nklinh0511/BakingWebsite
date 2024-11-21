@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +28,7 @@ public class UserController {
     @Autowired
     public LoginService loginService;
 
-    @PostMapping("/add")
+    @PostMapping("/add") 
     public ResponseEntity<Map<String, String>> add(@RequestBody User student) {
         //called from UserService
         studentService.saveStudent(student);
