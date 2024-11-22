@@ -17,7 +17,6 @@ const SearchBox = () => {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
-
   const [searchMode, setSearchMode] = useState('name');
   console.log(searchMode);
 
@@ -37,9 +36,6 @@ const SearchBox = () => {
     setResults([]); // Clear results after selection
   };
 
-
- 
-
   const fetchRecipes = async(input) => {
     if (!input.trim()) {
       setResults([]);
@@ -50,7 +46,7 @@ const SearchBox = () => {
     setError(null);
     
     try {
-      const response = await fetch(`http://localhost:8080/recipes/searchBy${searchMode}=${input}`);
+      const response = await fetch(`http://localhost:8080/recipes/searchBy${searchMode}?${searchMode}=${input}`);
       if (!response.ok) {
         throw new Error('Error fetching data');
       }
