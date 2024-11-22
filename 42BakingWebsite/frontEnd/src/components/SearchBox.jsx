@@ -50,7 +50,7 @@ const SearchBox = () => {
     setError(null);
     
     try {
-      const response = await fetch(`http://localhost:8080/recipes/searchBy?${searchMode}=${input}`);
+      const response = await fetch(`http://localhost:8080/recipes/searchBy${searchMode}=${input}`);
       if (!response.ok) {
         throw new Error('Error fetching data');
       }
