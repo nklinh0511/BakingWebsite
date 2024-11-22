@@ -32,12 +32,12 @@ public class RecipeController {
 
         // Search the database first
         List<Recipe> dbResults = recipeService.searchByName(name);
-        if (!dbResults.isEmpty()) {
+        // if (!dbResults.isEmpty()) {
             return dbResults; // Return database results if found
-        }
+        // }
 
         // Query the external API if no database results
-        return apiService.searchRecipesByName(name);
+        // return apiService.searchRecipesByName(name);
     }
 
     @GetMapping("/searchByingredient")
@@ -48,12 +48,12 @@ public class RecipeController {
 
         // Search the database first
         List<Recipe> dbResults = recipeService.searchByIngredient(ingredient);
-        if (!dbResults.isEmpty()) {
+        // if (!dbResults.isEmpty()) {
             return dbResults; // Return database results if found
-        } 
+        // } 
 
         // Querys the external API if no database results
-        return apiService.searchRecipesByIngredient(ingredient);
+        // return apiService.searchRecipesByIngredient(ingredient);
     }
 
     // Adds user entered data to database - calls addRecipe from recipeservice

@@ -33,8 +33,10 @@ const NavBar = () => {
             </div>
 
             */}
-            <SearchBox/>
+
           </nav>
+
+          <SearchBox />
 
           <div className="flex ">
             {loginNav.map((item) => (

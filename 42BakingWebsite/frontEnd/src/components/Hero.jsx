@@ -2,6 +2,7 @@ import backgroundImg from "../assets/image/heroBackground.jpg"
 import AddRecipes from "./AddRecipes"
 import NavBar from "./NavBar"
 import Ratings from "./Ratings"
+import SearchBox from "./SearchBox"
 
 const Hero = () => {
   return (
@@ -15,7 +16,9 @@ const Hero = () => {
 
 
       <div>
+      <SearchBox />
          <AddRecipes />
+         
       </div>
     </div>
   )
