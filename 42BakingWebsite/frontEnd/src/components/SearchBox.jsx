@@ -18,7 +18,6 @@ const SearchBox = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [searchMode, setSearchMode] = useState('name');
-  console.log(searchMode);
 
   const handleSearchModeChange = (e) => {
     setSearchMode(e.target.value);
@@ -52,6 +51,7 @@ const SearchBox = () => {
       }
       const data = await response.json();
       setResults([data]); // Assuming the response has an array of recipes in `recipes`
+      console.log(results);
     } catch (error) {
       setError(error.message);
     } finally {
