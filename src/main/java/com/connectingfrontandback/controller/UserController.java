@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.connectingfrontandback.model.AddRecipeRequest;
-import com.connectingfrontandback.model.ApiResponse;
 import com.connectingfrontandback.model.FavoriteRecipes;
 import com.connectingfrontandback.model.User;
+import com.connectingfrontandback.repository.ApiResponse;
 import com.connectingfrontandback.service.LoginService;
 import com.connectingfrontandback.service.UserService;
 
@@ -34,9 +34,9 @@ public class UserController {
     @Autowired
     public LoginService loginService;
 
-    @PostMapping("/add") 
+    @PostMapping("/add")
     public ResponseEntity<Map<String, String>> add(@RequestBody User student) {
-        //called from UserService
+        // called from UserService
         studentService.saveStudent(student);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Student added successfully");
@@ -46,11 +46,10 @@ public class UserController {
     @GetMapping("/getAll")
     public List<User> getAllStudents() {
 
-        //called from UserService
+        // called from UserService
         return studentService.getAllStudents();
     }
 
-    
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest) {
 
@@ -64,7 +63,7 @@ public class UserController {
         }
     }
 
-        @GetMapping("/get-favorite-recipes")
+    @GetMapping("/getfavoriterecipes")
     public ResponseEntity<?> getFavoriteRecipes(HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
@@ -72,14 +71,14 @@ public class UserController {
                     .body(new ApiResponse(false, "User not logged in"));
         }
 
-        List<String> favoriteRecipes = UserService.getFavoriteRecipes(username);
+        List<String> favoriteRecipes = studentService.getFavoriteRecipes(username);
         if (!favoriteRecipes.isEmpty()) {
             return ResponseEntity.ok(new FavoriteRecipes(true, favoriteRecipes));
         }
         return ResponseEntity.ok(new ApiResponse(false, "No favorite recipes found"));
     }
 
-    @PostMapping("/add-favorite-recipe")
+    @PostMapping("/addfavoriterecipe")
     public ResponseEntity<?> addFavoriteRecipe(@RequestBody AddRecipeRequest addRecipeRequest, HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
@@ -87,7 +86,7 @@ public class UserController {
                     .body(new ApiResponse(false, "User not logged in"));
         }
 
-        if (UserService.addFavoriteRecipe(username, addRecipeRequest.getRecipeName())) {
+        if (studentService.addFavoriteRecipe(username, addRecipeRequest.getRecipeName())) {
             return ResponseEntity.ok(new ApiResponse(true, "Recipe added successfully"));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

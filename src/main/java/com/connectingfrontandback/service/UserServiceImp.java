@@ -20,6 +20,8 @@ public class UserServiceImp implements UserService {
     @Autowired
     private UserRepository studentRepository;
 
+
+
     @Override
     public User saveStudent(User student) {
         // saves user information
@@ -31,6 +33,33 @@ public class UserServiceImp implements UserService {
         return studentRepository.findAll();  
     }
 
+    @Override
+    public List<String> getFavoriteRecipes(String username) {
+        User user = studentRepository.findById(username).orElse(null);
+        if (user != null && user.getFavoriteRecipes() != null) {
+            return Arrays.asList(user.getFavoriteRecipes().split(","));
+        }
+        return List.of();
+    }
+
+    // Add Favorite Recipe for a user
+    @Override
+    public boolean addFavoriteRecipe(String username, String recipeName) {
+        User user = studentRepository.findById(username).orElse(null);
+        if (user != null) {
+            String currentFavorites = user.getFavoriteRecipes();
+            String newFavorites = (currentFavorites == null || currentFavorites.isEmpty()) 
+                ? recipeName 
+                : currentFavorites + "," + recipeName;
+            user.setFavoriteRecipes(newFavorites);
+            studentRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+}
+
+    // Mirandas original code for get and add recipes 
     // public List<String> getFavoriteRecipes(String username) {
     // List<String> favoriteRecipes = new ArrayList<>();
     // try (Reader reader = Files.newBufferedReader(Paths.get(USER_CSV_FILE));
@@ -88,4 +117,4 @@ public class UserServiceImp implements UserService {
     // }
     // }
     // return false;
-}
+
