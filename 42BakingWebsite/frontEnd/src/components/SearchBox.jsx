@@ -34,6 +34,7 @@ const SearchBox = () => {
   const handleSelectResult = (recipe) => {
     setInput(recipe.name); // Optionally, set the input field with the selected result
     setResults([]); // Clear results after selection
+    console.log(results);
   };
 
   const fetchRecipes = async(input) => {
@@ -76,7 +77,7 @@ const SearchBox = () => {
 
             <select onChange={handleSearchModeChange} value={searchMode} className="px-2 font-poppins">
               <option value="name" className='font-poppins'>By Name</option>
-              <option value="ingredients" className='font-poppins'>By Ingredients</option>
+              <option value="ingredient" className='font-poppins'>By Ingredients</option>
             </select>
         </form>  
 
@@ -84,7 +85,7 @@ const SearchBox = () => {
         {error && <p>Error: {error}</p>}
 
         <div className="dropdown">
-        {results.length > 0 && (
+        {Array.isArray(results) && results.length > 0 && (
           <ul>
             {results.map((recipe) => (
               <li key={recipe.id} onClick={() => handleSelectResult(recipe)}>
@@ -95,7 +96,7 @@ const SearchBox = () => {
         )}
       </div>
 
-      {results.length === 0 && !loading && !error && input && (
+      {Array.isArray(results) && results.length === 0 && !loading && !error && searchQuery && (
         <p>No results found</p>
       )}
     </div>
