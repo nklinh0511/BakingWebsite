@@ -96,7 +96,7 @@ const SearchBox = () => {
         )}
       </div>
 
-      {Array.isArray(results) && results.length === 0 && !loading && !error && searchQuery && (
+      {Array.isArray(results) && results.length === 0 && !loading && !error && input && (
         <p>No results found</p>
       )}
     </div>
