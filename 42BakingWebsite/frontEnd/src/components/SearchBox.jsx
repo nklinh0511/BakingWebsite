@@ -50,7 +50,7 @@ const SearchBox = () => {
         throw new Error('Error fetching data');
       }
       const data = await response.json();
-      setResults([data]); // Assuming the response has an array of recipes in `recipes`
+      setResults(data); // Assuming the response has an array of recipes in `recipes`
       console.log(data);
 
     } catch (error) {
@@ -89,7 +89,7 @@ const SearchBox = () => {
           <ul>
             {results.map((recipe) => (
               <li key={recipe.id} onClick={() => handleSelectResult(recipe)}>
-                {recipe.name}
+                {recipe.title}
               </li>
             ))}
           </ul>
