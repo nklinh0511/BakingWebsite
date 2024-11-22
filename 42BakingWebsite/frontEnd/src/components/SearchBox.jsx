@@ -34,7 +34,6 @@ const SearchBox = () => {
   const handleSelectResult = (recipe) => {
     setInput(recipe.name); // Optionally, set the input field with the selected result
     setResults([]); // Clear results after selection
-    console.log(results);
   };
 
   const fetchRecipes = async(input) => {
@@ -52,7 +51,7 @@ const SearchBox = () => {
         throw new Error('Error fetching data');
       }
       const data = await response.json();
-      setResults(data.recipes); // Assuming the response has an array of recipes in `recipes`
+      setResults([data]); // Assuming the response has an array of recipes in `recipes`
     } catch (error) {
       setError(error.message);
     } finally {
