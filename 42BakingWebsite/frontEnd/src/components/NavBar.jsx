@@ -18,7 +18,7 @@ const NavBar = () => {
   return (
     <div className="fixed top-0 left-0 w-full max-w-full z-50 ">
         <div className="flex items-center my-6 px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-          <a className="block w-[12rem] xl:mr-8 text-color-2 font-titan text-2xl" href="./index.html">42Baking</a>
+          <a className="block w-[12rem] xl:mr-8 text-color-2 font-titan text-2xl" href="/">42Baking</a>
           <nav className="fixed top-[5rem] left-0 right-0 bottom-0 lg:static lg:flex lg:mx-auto lg:bg-transparent">
             {/*<div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
               {navigation.map((item) => (

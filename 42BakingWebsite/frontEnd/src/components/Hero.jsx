@@ -16,7 +16,6 @@ const Hero = () => {
 
 
       <div>
-      <SearchBox />
          <AddRecipes />
          
       </div>
