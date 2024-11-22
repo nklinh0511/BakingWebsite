@@ -14,6 +14,7 @@ public class User {
     @Id
     private String username;
     private String email;
+    private String favoriteRecipes;
 
     public User() {
 
@@ -41,6 +42,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFavoriteRecipes() {
+        return favoriteRecipes;
+    }
+
+    public void setFavoriteRecipes(String favoriteRecipes) {
+        this.favoriteRecipes = favoriteRecipes;
     }
 
 }

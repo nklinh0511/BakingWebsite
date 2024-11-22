@@ -1,6 +1,5 @@
-package com.connectingfrontandback.model;
+package com.connectingfrontandback.repository;
 
-//What is this?
 public class ApiResponse {
     private boolean success;
     private String message;

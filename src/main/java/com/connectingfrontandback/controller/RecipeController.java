@@ -24,7 +24,7 @@ public class RecipeController {
         this.apiService = apiService;
     }
 
-    @GetMapping("/searchByName")
+    @GetMapping("/searchByname")
     public Object searchRecipesByName(@RequestParam String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name parameter cannot be null or empty");
@@ -40,7 +40,7 @@ public class RecipeController {
         return apiService.searchRecipesByName(name);
     }
 
-    @GetMapping("/searchByIngredient")
+    @GetMapping("/searchByingredient")
     public Object searchRecipesByIngredient(@RequestParam String ingredient) {
         if (ingredient == null || ingredient.trim().isEmpty()) {
             throw new IllegalArgumentException("Ingredient parameter cannot be null or empty");
