@@ -17,6 +17,7 @@ public class LoginService {
         // Find the user by username
         Optional<User> user = userRepository.findByUsername(username);
 
+        //checks if username and password are found
         if (user.isPresent() && user.get().getPassword().equals(password)) {
             return user; // Login successful
         }

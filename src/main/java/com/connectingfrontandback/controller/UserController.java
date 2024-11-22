@@ -5,15 +5,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.connectingfrontandback.model.AddRecipeRequest;
+import com.connectingfrontandback.model.ApiResponse;
+import com.connectingfrontandback.model.FavoriteRecipes;
 import com.connectingfrontandback.model.User;
 import com.connectingfrontandback.service.LoginService;
 import com.connectingfrontandback.service.UserService;
@@ -30,13 +34,9 @@ public class UserController {
     @Autowired
     public LoginService loginService;
 
-    @PostConstruct
-    public void init() {
-        System.out.println("StudentController initialized!");
-    }
-
-    @PostMapping("/add")
+    @PostMapping("/add") 
     public ResponseEntity<Map<String, String>> add(@RequestBody User student) {
+        //called from UserService
         studentService.saveStudent(student);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Student added successfully");
@@ -45,20 +45,53 @@ public class UserController {
 
     @GetMapping("/getAll")
     public List<User> getAllStudents() {
+
+        //called from UserService
         return studentService.getAllStudents();
     }
 
-    // Called from loginService 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User loginRequest) {
-        Optional<User> user = loginService.validateLogin(loginRequest.getUsername(), loginRequest.getPassword());
     
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest) {
+
+        // Called from loginService
+        Optional<User> user = loginService.validateLogin(loginRequest.getUsername(), loginRequest.getPassword());
+
         if (user.isPresent()) {
-            return ResponseEntity.ok("Login successful!"); // Customize response as needed
+            return ResponseEntity.ok(Map.of("message", "Login successful!"));
         } else {
-            return ResponseEntity.status(401).body("Invalid username or password.");
+            return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password."));
         }
     }
-    
+
+        @GetMapping("/get-favorite-recipes")
+    public ResponseEntity<?> getFavoriteRecipes(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(false, "User not logged in"));
+        }
+
+        List<String> favoriteRecipes = UserService.getFavoriteRecipes(username);
+        if (!favoriteRecipes.isEmpty()) {
+            return ResponseEntity.ok(new FavoriteRecipes(true, favoriteRecipes));
+        }
+        return ResponseEntity.ok(new ApiResponse(false, "No favorite recipes found"));
+    }
+
+    @PostMapping("/add-favorite-recipe")
+    public ResponseEntity<?> addFavoriteRecipe(@RequestBody AddRecipeRequest addRecipeRequest, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(false, "User not logged in"));
+        }
+
+        if (UserService.addFavoriteRecipe(username, addRecipeRequest.getRecipeName())) {
+            return ResponseEntity.ok(new ApiResponse(true, "Recipe added successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(false, "Failed to add recipe"));
+    }
 
 }

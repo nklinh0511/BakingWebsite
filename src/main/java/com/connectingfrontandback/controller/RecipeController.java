@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.connectingfrontandback.model.Recipe;
+import com.connectingfrontandback.service.APIService;
 import com.connectingfrontandback.service.RecipeService;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/recipes")
@@ -18,27 +16,48 @@ public class RecipeController {
     @Autowired
     private final RecipeService recipeService;
 
-    public RecipeController(RecipeService recipeService) {
+    @Autowired
+    private final APIService apiService;
+
+    public RecipeController(RecipeService recipeService, APIService apiService) {
         this.recipeService = recipeService;
+        this.apiService = apiService;
     }
 
     @GetMapping("/searchByName")
-    public List<Recipe> searchRecipesByName(@RequestParam String name) {
+    public Object searchRecipesByName(@RequestParam String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name parameter cannot be null or empty");
         }
-        return recipeService.searchByName(name);
+
+        // Search the database first
+        List<Recipe> dbResults = recipeService.searchByName(name);
+        if (!dbResults.isEmpty()) {
+            return dbResults; // Return database results if found
+        }
+
+        // Query the external API if no database results
+        return apiService.searchRecipesByName(name);
     }
 
     @GetMapping("/searchByIngredient")
-    public List<Recipe> searchRecipesByIngredient(@RequestParam String ingredient) {
+    public Object searchRecipesByIngredient(@RequestParam String ingredient) {
         if (ingredient == null || ingredient.trim().isEmpty()) {
             throw new IllegalArgumentException("Ingredient parameter cannot be null or empty");
         }
-        return recipeService.searchByIngredient(ingredient);
+
+        // Search the database first
+        List<Recipe> dbResults = recipeService.searchByIngredient(ingredient);
+        if (!dbResults.isEmpty()) {
+            return dbResults; // Return database results if found
+        } 
+
+        // Querys the external API if no database results
+        return apiService.searchRecipesByIngredient(ingredient);
     }
 
-    @PostMapping("/add") 
+    // Adds user entered data to database - calls addRecipe from recipeservice
+    @PostMapping("/add")
     public Recipe addRecipe(@RequestBody Recipe recipe) {
         return recipeService.addRecipe(recipe);
     }
@@ -47,5 +66,5 @@ public class RecipeController {
     public List<Recipe> getMethodName() {
         return recipeService.getAllRecipes();
     }
-    
+
 }
