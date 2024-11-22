@@ -51,7 +51,8 @@ const SearchBox = () => {
       }
       const data = await response.json();
       setResults([data]); // Assuming the response has an array of recipes in `recipes`
-      console.log(results);
+      console.log(data);
+
     } catch (error) {
       setError(error.message);
     } finally {
