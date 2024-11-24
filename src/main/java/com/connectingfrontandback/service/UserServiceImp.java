@@ -15,8 +15,6 @@ public class UserServiceImp implements UserService {
     @Autowired
     private UserRepository studentRepository;
 
-
-
     @Override
     public User saveStudent(User student) {
         // saves user information
@@ -25,7 +23,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public List<User> getAllStudents() {
-        return studentRepository.findAll();  
+        return studentRepository.findAll();
     }
 
     @Override
@@ -43,9 +41,9 @@ public class UserServiceImp implements UserService {
         User user = studentRepository.findById(username).orElse(null);
         if (user != null) {
             String currentFavorites = user.getFavoriteRecipes();
-            String newFavorites = (currentFavorites == null || currentFavorites.isEmpty()) 
-                ? recipeName 
-                : currentFavorites + "," + recipeName;
+            String newFavorites = (currentFavorites == null || currentFavorites.isEmpty())
+                    ? recipeName
+                    : currentFavorites + "," + recipeName;
             user.setFavoriteRecipes(newFavorites);
             studentRepository.save(user);
             return true;
@@ -54,62 +52,61 @@ public class UserServiceImp implements UserService {
     }
 }
 
-    // Mirandas original code for get and add recipes 
-    // public List<String> getFavoriteRecipes(String username) {
-    // List<String> favoriteRecipes = new ArrayList<>();
-    // try (Reader reader = Files.newBufferedReader(Paths.get(USER_CSV_FILE));
-    // CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader()))
-    // {
+// Mirandas original code for get and add recipes
+// public List<String> getFavoriteRecipes(String username) {
+// List<String> favoriteRecipes = new ArrayList<>();
+// try (Reader reader = Files.newBufferedReader(Paths.get(USER_CSV_FILE));
+// CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader()))
+// {
 
-    // for (CSVRecord record : csvParser) {
-    // if (record.get("Username").equals(username) &&
-    // record.isSet("FavoriteRecipes")) {
-    // String[] recipes = record.get("FavoriteRecipes").split(",");
-    // favoriteRecipes.addAll(Arrays.asList(recipes));
-    // }
-    // }
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // return favoriteRecipes;
-    // }
+// for (CSVRecord record : csvParser) {
+// if (record.get("Username").equals(username) &&
+// record.isSet("FavoriteRecipes")) {
+// String[] recipes = record.get("FavoriteRecipes").split(",");
+// favoriteRecipes.addAll(Arrays.asList(recipes));
+// }
+// }
+// } catch (IOException e) {
+// e.printStackTrace();
+// }
+// return favoriteRecipes;
+// }
 
-    // public boolean addFavoriteRecipe(String username, String recipeName) {
-    // List<Map<String, String>> users = new ArrayList<>();
-    // boolean userFound = false;
+// public boolean addFavoriteRecipe(String username, String recipeName) {
+// List<Map<String, String>> users = new ArrayList<>();
+// boolean userFound = false;
 
-    // try (Reader reader = Files.newBufferedReader(Paths.get(USER_CSV_FILE));
-    // CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader()))
-    // {
+// try (Reader reader = Files.newBufferedReader(Paths.get(USER_CSV_FILE));
+// CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader()))
+// {
 
-    // for (CSVRecord record : csvParser) {
-    // Map<String, String> user = record.toMap();
-    // if (record.get("Username").equals(username)) {
-    // userFound = true;
-    // String currentFavorites = record.isSet("FavoriteRecipes") ?
-    // record.get("FavoriteRecipes") : "";
-    // user.put("FavoriteRecipes", currentFavorites.isEmpty() ? recipeName :
-    // currentFavorites + "," + recipeName);
-    // }
-    // users.add(user);
-    // }
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
+// for (CSVRecord record : csvParser) {
+// Map<String, String> user = record.toMap();
+// if (record.get("Username").equals(username)) {
+// userFound = true;
+// String currentFavorites = record.isSet("FavoriteRecipes") ?
+// record.get("FavoriteRecipes") : "";
+// user.put("FavoriteRecipes", currentFavorites.isEmpty() ? recipeName :
+// currentFavorites + "," + recipeName);
+// }
+// users.add(user);
+// }
+// } catch (IOException e) {
+// e.printStackTrace();
+// }
 
-    // if (userFound) {
-    // try (Writer writer = Files.newBufferedWriter(Paths.get(USER_CSV_FILE));
-    // CSVPrinter csvPrinter = new CSVPrinter(writer,
-    // CSVFormat.DEFAULT.withHeader("Username", "Password", "FavoriteRecipes"))) {
+// if (userFound) {
+// try (Writer writer = Files.newBufferedWriter(Paths.get(USER_CSV_FILE));
+// CSVPrinter csvPrinter = new CSVPrinter(writer,
+// CSVFormat.DEFAULT.withHeader("Username", "Password", "FavoriteRecipes"))) {
 
-    // for (Map<String, String> user : users) {
-    // csvPrinter.printRecord(user.values());
-    // }
-    // csvPrinter.flush();
-    // return true;
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    // return false;
-
+// for (Map<String, String> user : users) {
+// csvPrinter.printRecord(user.values());
+// }
+// csvPrinter.flush();
+// return true;
+// } catch (IOException e) {
+// e.printStackTrace();
+// }
+// }
+// return false;

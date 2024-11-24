@@ -9,6 +9,9 @@ import java.util.List;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    List<Recipe> findByName(String name);
+    List<Recipe> findByNameIn(List<String> names);
+
+    // Use LIKE to match any ingredient in the list
     List<Recipe> findByIngredientsContainingIgnoreCase(String ingredient);
+
 }

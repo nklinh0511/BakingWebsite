@@ -1,5 +1,6 @@
 package com.connectingfrontandback.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,25 +13,32 @@ import com.connectingfrontandback.repository.RecipeRepository;
 public class RecipeService {
 
     @Autowired
-    private RecipeRepository recipeRepository; 
+    private RecipeRepository recipeRepository;
 
-    //searches a user entered recipe by name
-    public List<Recipe> searchByName(String name) {
-        return recipeRepository.findByName(name);
+    // searches a user entered recipe by name
+    public List<Recipe> searchByName(List<String> names) {
+        // Use the repository method that accepts a list of names
+        return recipeRepository.findByNameIn(names); // This method uses the IN query to match multiple names
     }
 
-    //searches a user enteered recipe by ingredient
-    public List<Recipe> searchByIngredient(String ingredient) {
-        return recipeRepository.findByIngredientsContainingIgnoreCase(ingredient);
+    public List<Recipe> searchByIngredient(String ingredients) {
+        String[] ingredientList = ingredients.split(","); // Split by commas to handle each ingredient
+        List<Recipe> results = new ArrayList<>();
+
+        for (String ingredient : ingredientList) {
+            results.addAll(recipeRepository.findByIngredientsContainingIgnoreCase(ingredient.trim()));
+        }
+
+        return results;
     }
 
-    //adds a user ented recipe
+    // adds a user ented recipe
     public Recipe addRecipe(Recipe recipe) {
-        return recipeRepository.save(recipe);  // Return the saved recipe
+        return recipeRepository.save(recipe); // Return the saved recipe
     }
 
-    //gets a list of all user entered recipes
-     public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();  
+    // gets a list of all user entered recipes
+    public List<Recipe> getAllRecipes() {
+        return recipeRepository.findAll();
     }
 }
