@@ -16,12 +16,12 @@ public class RecipeController {
     @Autowired
     private final RecipeService recipeService;
 
-    @Autowired
-    private final APIService apiService;
+    // @Autowired
+    // private final APIService apiService;
 
     public RecipeController(RecipeService recipeService, APIService apiService) {
         this.recipeService = recipeService;
-        this.apiService = apiService;
+        // this.apiService = apiService;
     }
 
     @GetMapping("/searchByname")

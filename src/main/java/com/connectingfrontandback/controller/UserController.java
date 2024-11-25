@@ -96,10 +96,10 @@ public class UserController {
                 .body(new ApiResponse(false, "Failed to add recipe"));
     }
 
-    @GetMapping("/debug-session")
-    public ResponseEntity<?> debugSession(HttpSession session) {
-        String username = (String) session.getAttribute("username");
-        return ResponseEntity.ok("Session ID: " + session.getId() + ", Username: " + username);
-    }
+    // @GetMapping("/debug-session")
+    // public ResponseEntity<?> debugSession(HttpSession session) {
+    //     String username = (String) session.getAttribute("username");
+    //     return ResponseEntity.ok("Session ID: " + session.getId() + ", Username: " + username);
+    // }
 
 }
