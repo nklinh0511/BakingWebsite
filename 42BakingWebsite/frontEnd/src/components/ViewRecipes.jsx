@@ -1,9 +1,9 @@
-import RecipeFormat from "./RecipeFormat"
+import RecipeCard from "./RecipeCard"
 
 const ViewRecipes = () => {
   return (
     <div>
-      <RecipeFormat />
+      <RecipeCard />
     </div>
   )
 }
