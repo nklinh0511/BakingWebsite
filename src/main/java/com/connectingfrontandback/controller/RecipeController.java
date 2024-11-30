@@ -16,12 +16,12 @@ public class RecipeController {
     @Autowired
     private final RecipeService recipeService;
 
-    @Autowired
-    private final APIService apiService;
+    // @Autowired
+    // private final APIService apiService;
 
     public RecipeController(RecipeService recipeService, APIService apiService) {
         this.recipeService = recipeService;
-        this.apiService = apiService;
+        // this.apiService = apiService;
     }
 
     @GetMapping("/searchByname")
@@ -30,14 +30,13 @@ public class RecipeController {
             throw new IllegalArgumentException("Name parameter cannot be null or empty");
         }
 
-        // Search the database first
-        List<Recipe> dbResults = recipeService.searchByName(name);
-        if (!dbResults.isEmpty()) {
-            return dbResults; // Return database results if found
-        }
+        // Split the name by commas and trim any extra spaces
+        List<String> nameList = List.of(name.split("\\s*,\\s*"));
 
-        // Query the external API if no database results
-        return apiService.searchRecipesByName(name);
+        // Search the database first
+        List<Recipe> dbResults = recipeService.searchByName(nameList);
+
+        return dbResults;
     }
 
     @GetMapping("/searchByingredient")
@@ -48,12 +47,7 @@ public class RecipeController {
 
         // Search the database first
         List<Recipe> dbResults = recipeService.searchByIngredient(ingredient);
-        if (!dbResults.isEmpty()) {
-            return dbResults; // Return database results if found
-        } 
-
-        // Querys the external API if no database results
-        return apiService.searchRecipesByIngredient(ingredient);
+        return dbResults; // Return database results if found
     }
 
     // Adds user entered data to database - calls addRecipe from recipeservice

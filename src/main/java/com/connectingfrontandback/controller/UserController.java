@@ -51,12 +51,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest, HttpSession session) {
 
         // Called from loginService
         Optional<User> user = loginService.validateLogin(loginRequest.getUsername(), loginRequest.getPassword());
 
         if (user.isPresent()) {
+
+            // Set the username in the session after successful login
+            session.setAttribute("username", loginRequest.getUsername());
             return ResponseEntity.ok(Map.of("message", "Login successful!"));
         } else {
             return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password."));
@@ -92,5 +95,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(false, "Failed to add recipe"));
     }
+
+    // @GetMapping("/debug-session")
+    // public ResponseEntity<?> debugSession(HttpSession session) {
+    //     String username = (String) session.getAttribute("username");
+    //     return ResponseEntity.ok("Session ID: " + session.getId() + ", Username: " + username);
+    // }
 
 }

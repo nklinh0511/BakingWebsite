@@ -63,6 +63,7 @@ const SearchBox = () => {
   const debouncedFetchRecipes = debounce(fetchRecipes, 500);
 
   return (
+    <div className="relative">
     <div className="bg-white w-auto border pt-0 flex items-center rounded-full px-10 m-0">
       <FaSearch id="search-icon" className="items-center" />
         <form className="flex">
@@ -84,12 +85,14 @@ const SearchBox = () => {
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
 
-        <div className="absolute">
+      </div>
+      <div >
+      <div className="dropdown bg-white absolute width-full">
         {Array.isArray(results) && results.length > 0 && (
           <ul>
             {results.map((recipe) => (
               <li key={recipe.id} onClick={() => handleSelectResult(recipe)}>
-                {recipe.title}
+                {recipe.name}
               </li>
             ))}
           </ul>
@@ -99,6 +102,7 @@ const SearchBox = () => {
       {Array.isArray(results) && results.length === 0 && !loading && !error && input && (
         <p>No results found</p>
       )}
+      </div>
     </div>
   )
 }

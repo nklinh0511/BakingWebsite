@@ -17,7 +17,7 @@ const Hero = () => {
 
       <div>
          <AddRecipes />
-         <SearchBox />
+
       </div>
     </div>
   )
