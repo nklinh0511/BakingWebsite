@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HeartIcon } from '@heroicons/react/24/outline';  // Outlined heart icon (unfavorited)
-import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid'; // Filled heart icon (favorited)
+import { HeartIcon } from '@heroicons/react/24/outline'; 
+import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid'; 
 
 
 const RecipeCard = ({ recipe }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const [favoriteId, setFavoriteId] = useState();
+
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+
+    if(isFavorite) {
+        favoriteId = recipe.Id;
+    }
   };
 
   const navigate = useNavigate();
