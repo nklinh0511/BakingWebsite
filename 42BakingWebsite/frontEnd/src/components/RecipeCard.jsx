@@ -17,6 +17,31 @@ const RecipeCard = ({ recipe }) => {
     }
   };
 
+  const handleAddToFavorites = async (recipeName) => {
+    try {
+      // POST request to add the recipe to favorites
+      const response = await fetch('http://localhost:8080/api/addfavoriterecipe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipeName,    // The name of the recipe being added to favorites
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);  // Log success message from the backend
+        setIsFavorite(true); // Mark as favorite
+      } else {
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
+  };
+
   const navigate = useNavigate();
 
   // Function to navigate to the recipe detail page
@@ -39,7 +64,7 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <div className="relative p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-all">
-      <div><button onClick="toggleFavorite">Favorite</button></div>
+      <div><button onClick={handleAddToFavorites(recipe.name)}>Favorite</button></div>
 
 
       <h3 className="font-poppins cursor-pointer text-xl font-bold text-color-6 hover:text-color-2" onClick={handleClick}>{recipe.name}</h3>
