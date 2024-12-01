@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LogIn = ({ onLogin }) => {
     const [isLogin, setIsLogin] = useState(false);  // Start with Login form by default
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,6 +26,7 @@ const LogIn = ({ onLogin }) => {
                     const data = await response.json();
                     console.log('User created:', data);
                     onLogin(); // Trigger login upon successful registration
+                    navigate(`/`);
                 } else {
                     console.error('Error:', response.statusText);
                 }
@@ -41,6 +44,7 @@ const LogIn = ({ onLogin }) => {
                     console.log("Logged In!");
                     
                     onLogin(); // Trigger login upon successful login
+                    navigate(`/`);
                 } else {
                     console.error('Error:', response.statusText);
                 }

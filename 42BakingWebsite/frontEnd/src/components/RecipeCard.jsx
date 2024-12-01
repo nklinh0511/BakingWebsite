@@ -6,8 +6,14 @@ import { useNavigate } from 'react-router-dom';
 const RecipeCard = ({ recipe }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const [favoriteId, setFavoriteId] = useState();
+
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+
+    if(isFavorite) {
+        favoriteId = recipe.Id;
+    }
   };
 
   const navigate = useNavigate();
