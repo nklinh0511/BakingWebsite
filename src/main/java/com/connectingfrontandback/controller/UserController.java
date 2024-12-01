@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.connectingfrontandback.model.AddRecipeRequest;
 import com.connectingfrontandback.model.FavoriteRecipes;
+import com.connectingfrontandback.model.Recipe;
 import com.connectingfrontandback.model.User;
 import com.connectingfrontandback.repository.ApiResponse;
 import com.connectingfrontandback.service.LoginService;
 import com.connectingfrontandback.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/student")
@@ -96,10 +98,14 @@ public class UserController {
                 .body(new ApiResponse(false, "Failed to add recipe"));
     }
 
-    // @GetMapping("/debug-session")
-    // public ResponseEntity<?> debugSession(HttpSession session) {
-    //     String username = (String) session.getAttribute("username");
-    //     return ResponseEntity.ok("Session ID: " + session.getId() + ", Username: " + username);
+    // @GetMapping("/id")
+    // public ResponseEntity<?> getRecipeById(@PathVariable long id) {
+    // Recipe recipe = studentService.getRecipeById(id);
+    // if (recipe != null) {
+    // return ResponseEntity.ok(recipe); // Return the recipe if found
+    // }
+    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    // .body(new ApiResponse(false, "Recipe not found"));
     // }
 
 }
