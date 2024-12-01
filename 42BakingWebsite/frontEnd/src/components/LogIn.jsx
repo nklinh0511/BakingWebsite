@@ -25,8 +25,10 @@ const LogIn = ({ onLogin }) => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log('User created:', data);
-                    onLogin(); // Trigger login upon successful registration
                     navigate(`/`);
+      
+                    onLogin(); // Trigger login upon successful registration
+                   
                 } else {
                     console.error('Error:', response.statusText);
                 }
@@ -42,9 +44,10 @@ const LogIn = ({ onLogin }) => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log("Logged In!");
-                    
-                    onLogin(); // Trigger login upon successful login
                     navigate(`/`);
+
+                    onLogin(); // Trigger login upon successful login
+                    
                 } else {
                     console.error('Error:', response.statusText);
                 }

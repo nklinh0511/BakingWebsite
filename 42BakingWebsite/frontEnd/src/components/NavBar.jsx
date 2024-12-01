@@ -10,6 +10,8 @@ const NavBar = ({ isLoggedIn, onLogin, onLogout }) => {
     setOpenNavigation(false);
   };
 
+  console.log(isLoggedIn);
+
   return (
     <div className="fixed top-0 left-0 w-full max-w-full z-50">
       <div className="flex items-center my-6 px-5 lg:px-7.5 xl:px-10 max-lg:py-4">

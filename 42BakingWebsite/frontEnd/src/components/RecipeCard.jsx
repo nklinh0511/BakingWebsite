@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 // Filled heart icon (favorited)
 
 
@@ -38,19 +39,16 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <div className="relative p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-all">
+      <div><button onClick="toggleFavorite">Favorite</button></div>
 
 
-      <h3 className="font-poppins cursor-pointer text-xl font-bold text-color-6 hover:text-color-2" onClick={handleClick}>{recipe.title}</h3>
+      <h3 className="font-poppins cursor-pointer text-xl font-bold text-color-6 hover:text-color-2" onClick={handleClick}>{recipe.name}</h3>
       <div className="flex items-center space-x-1">
         {renderStars(recipe.rating)} {/* Show stars based on rating */}
       </div>
       <div className="mt-4">
           <h3 className="font-poppins text-lg font-medium text-color-6">Ingredients:</h3>
-          <ul className="font-poppins list-inside list-disc text-color-6 text-sm">
-            {recipe.ingredients.map((ingredient, index) => (
-              <li key={index}>{ingredient}</li>
-            ))}
-          </ul>
+          <p>Ingredients: {recipe.ingredients}</p>
         </div>
 
        

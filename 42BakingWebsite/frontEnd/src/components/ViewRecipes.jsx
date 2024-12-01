@@ -1,19 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import RecipeCard from './RecipeCard';
 
-
 const ViewRecipes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [recipes, setRecipes] = useState([]);  // State to store recipes
   const [loading, setLoading] = useState(true); // State for loading status
   const [error, setError] = useState(null);     // State for errors
-  const itemsPerPage = 15;
-  const totalPages = Math.ceil(sampleRecipes.length / itemsPerPage);
+  const itemsPerPage = 15;  // Number of recipes per page
+
+  // Fetch recipes when the component mounts
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/recipes/getAllRecipes');
+        if (!response.ok) {
+          throw new Error('Failed to fetch recipes');
+        }
+        const data = await response.json();
+        setRecipes(data); // Set recipes after fetching
+      } catch (err) {
+        setError(err.message); // Handle errors
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchRecipes(); // Call the function to fetch data when the component mounts
+  }, []);
 
   // Paginate the recipes
   const indexOfLastRecipe = currentPage * itemsPerPage;
   const indexOfFirstRecipe = indexOfLastRecipe - itemsPerPage;
-  const currentRecipes = sampleRecipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
+  const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);  // Slice the recipes
 
   // Handle page change
   const handlePageChange = (page) => {
@@ -22,7 +40,7 @@ const ViewRecipes = () => {
 
   // Handle next and previous buttons
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
+    if (currentPage < Math.ceil(recipes.length / itemsPerPage)) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -34,33 +52,11 @@ const ViewRecipes = () => {
   };
 
   // Generate page numbers for pagination
+  const totalPages = Math.ceil(recipes.length / itemsPerPage);
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
-
-  useEffect(() => {
-    // Fetch recipes from your backend API
-    const fetchRecipes = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/recipes/getAllRecipes');
-        
-        // Check if the response is ok
-        if (!response.ok) {
-          throw new Error('Failed to fetch recipes');
-        }
-
-        const data = await response.json();
-        setRecipes(data); // Set the recipes state with the fetched data
-      } catch (err) {
-        setError(err.message); // Handle errors if the fetch fails
-      } finally {
-        setLoading(false); // Stop loading
-      }
-    };
-
-    fetchRecipes(); // Call the function to fetch data when the component mounts
-  }, []); // Empty dependency array to run this effect only once when the component mounts
 
   // Render loading, error, or recipes based on the state
   if (loading) {
@@ -75,7 +71,7 @@ const ViewRecipes = () => {
     <div className="container mx-auto p-4">
       {/* Recipe Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {recipes.map((recipe, index) => (
+        {currentRecipes.map((recipe, index) => (
           <RecipeCard key={index} recipe={recipe} />
         ))}
       </div>
@@ -87,7 +83,7 @@ const ViewRecipes = () => {
           disabled={currentPage === 1}
           className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-l-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500"
         >
-          previous
+          Previous
         </button>
 
         {/* Page Numbers */}
@@ -108,7 +104,7 @@ const ViewRecipes = () => {
           disabled={currentPage === totalPages}
           className="px-4 py-2 bg-color-7 text-white font-semibold rounded-r-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500"
         >
-          next
+          Next
         </button>
       </div>
     </div>
