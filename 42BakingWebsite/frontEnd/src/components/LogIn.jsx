@@ -39,6 +39,7 @@ const LogIn = ({ onLogin }) => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log("Logged In!");
+                    
                     onLogin(); // Trigger login upon successful login
                 } else {
                     console.error('Error:', response.statusText);

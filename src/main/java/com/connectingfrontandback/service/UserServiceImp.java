@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.connectingfrontandback.model.Recipe;
 import com.connectingfrontandback.model.User;
+import com.connectingfrontandback.repository.RecipeRepository;
 import com.connectingfrontandback.repository.UserRepository;
 
 @Service
@@ -15,6 +16,9 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private UserRepository studentRepository;
+
+    @Autowired
+    private RecipeRepository recipeRepository;
 
     @Override
     public User saveStudent(User student) {
@@ -52,67 +56,5 @@ public class UserServiceImp implements UserService {
         return false;
     }
 
-    // public Recipe getRecipeById(int id) {
-    // // Fetch the recipe using the repository
-    // return recipeRepository.findById(id).orElse(null);
-    // }
+ 
 }
-
-// Mirandas original code for get and add recipes
-// public List<String> getFavoriteRecipes(String username) {
-// List<String> favoriteRecipes = new ArrayList<>();
-// try (Reader reader = Files.newBufferedReader(Paths.get(USER_CSV_FILE));
-// CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader()))
-// {
-
-// for (CSVRecord record : csvParser) {
-// if (record.get("Username").equals(username) &&
-// record.isSet("FavoriteRecipes")) {
-// String[] recipes = record.get("FavoriteRecipes").split(",");
-// favoriteRecipes.addAll(Arrays.asList(recipes));
-// }
-// }
-// } catch (IOException e) {
-// e.printStackTrace();
-// }
-// return favoriteRecipes;
-// }
-
-// public boolean addFavoriteRecipe(String username, String recipeName) {
-// List<Map<String, String>> users = new ArrayList<>();
-// boolean userFound = false;
-
-// try (Reader reader = Files.newBufferedReader(Paths.get(USER_CSV_FILE));
-// CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader()))
-// {
-
-// for (CSVRecord record : csvParser) {
-// Map<String, String> user = record.toMap();
-// if (record.get("Username").equals(username)) {
-// userFound = true;
-// String currentFavorites = record.isSet("FavoriteRecipes") ?
-// record.get("FavoriteRecipes") : "";
-// user.put("FavoriteRecipes", currentFavorites.isEmpty() ? recipeName :
-// currentFavorites + "," + recipeName);
-// }
-// users.add(user);
-// }
-// } catch (IOException e) {
-// e.printStackTrace();
-// }
-
-// if (userFound) {
-// try (Writer writer = Files.newBufferedWriter(Paths.get(USER_CSV_FILE));
-// CSVPrinter csvPrinter = new CSVPrinter(writer,
-// CSVFormat.DEFAULT.withHeader("Username", "Password", "FavoriteRecipes"))) {
-
-// for (Map<String, String> user : users) {
-// csvPrinter.printRecord(user.values());
-// }
-// csvPrinter.flush();
-// return true;
-// } catch (IOException e) {
-// e.printStackTrace();
-// }
-// }
-// return false;

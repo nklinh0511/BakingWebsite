@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import RecipeCard from './RecipeCard';
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+
 
 
 const sampleRecipes = [
@@ -72,7 +72,7 @@ const ViewRecipes = () => {
           disabled={currentPage === 1}
           className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-l-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500"
         >
-          <ChevronLeftIcon className="w-6 h-6" />
+          previous
         </button>
 
         {/* Page Numbers */}
@@ -93,7 +93,7 @@ const ViewRecipes = () => {
           disabled={currentPage === totalPages}
           className="px-4 py-2 bg-color-7 text-white font-semibold rounded-r-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500"
         >
-          <ChevronRightIcon className="w-6 h-6" />
+          next
         </button>
       </div>
     </div>

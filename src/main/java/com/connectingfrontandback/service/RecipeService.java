@@ -2,6 +2,7 @@ package com.connectingfrontandback.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,4 +42,9 @@ public class RecipeService {
     public List<Recipe> getAllRecipes() {
         return recipeRepository.findAll();
     }
-}
+
+    public Recipe getRecipeById(long id) {
+        Optional<Recipe> recipe = recipeRepository.findById(id);
+        return recipe.orElse(null); // Return the recipe or null if not found
+    }
+} 

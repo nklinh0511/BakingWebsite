@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HeartIcon } from '@heroicons/react/24/outline';  // Outlined heart icon (unfavorited)
-import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid'; // Filled heart icon (favorited)
+// Filled heart icon (favorited)
 
 
 const RecipeCard = ({ recipe }) => {
@@ -33,16 +32,7 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <div className="relative p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-all">
-         {/* Favorite Icon */}
-         <div className="mt-0 mr-3 flex right-1 absolute">
-          <button onClick={toggleFavorite} aria-label="Toggle Favorite">
-            {isFavorite ? (
-              <SolidHeartIcon className="w-6 h-6 text-color-5" />
-            ) : (
-              <HeartIcon className="w-6 h-6 text-color-5 hover:text-color-2 transition-colors duration-200" />
-            )}
-          </button>
-        </div>
+
 
       <h3 className="font-poppins cursor-pointer text-xl font-bold text-color-6 hover:text-color-2" onClick={handleClick}>{recipe.title}</h3>
       <div className="flex items-center space-x-1">

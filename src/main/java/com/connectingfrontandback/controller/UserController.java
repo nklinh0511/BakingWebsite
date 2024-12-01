@@ -98,14 +98,6 @@ public class UserController {
                 .body(new ApiResponse(false, "Failed to add recipe"));
     }
 
-    // @GetMapping("/id")
-    // public ResponseEntity<?> getRecipeById(@PathVariable long id) {
-    // Recipe recipe = studentService.getRecipeById(id);
-    // if (recipe != null) {
-    // return ResponseEntity.ok(recipe); // Return the recipe if found
-    // }
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body(new ApiResponse(false, "Recipe not found"));
-    // }
+   
 
 }

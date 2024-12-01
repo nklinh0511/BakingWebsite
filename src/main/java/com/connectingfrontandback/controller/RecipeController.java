@@ -1,9 +1,12 @@
 package com.connectingfrontandback.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.connectingfrontandback.model.Recipe;
+import com.connectingfrontandback.repository.ApiResponse;
 import com.connectingfrontandback.service.APIService;
 import com.connectingfrontandback.service.RecipeService;
 
@@ -61,4 +64,13 @@ public class RecipeController {
         return recipeService.getAllRecipes();
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<?> getRecipeById(@PathVariable long id) {
+        Recipe recipe = recipeService.getRecipeById(id);
+        if (recipe != null) {
+            return ResponseEntity.ok(recipe); // Return the recipe if found
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse(false, "Recipe not found"));
+    }
 }
