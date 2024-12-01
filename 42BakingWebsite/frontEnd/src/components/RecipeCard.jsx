@@ -20,7 +20,7 @@ const RecipeCard = ({ recipe }) => {
   const handleAddToFavorites = async (recipeName) => {
     try {
       // POST request to add the recipe to favorites
-      const response = await fetch('http://localhost:8080/api/addfavoriterecipe', {
+      const response = await fetch('http://localhost:8080/student/addfavoriterecipe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <div className="relative p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-all">
-      <div><button onClick={handleAddToFavorites(recipe.name)}>Favorite</button></div>
+      <div><button>Favorite</button></div>
 
 
       <h3 className="font-poppins cursor-pointer text-xl font-bold text-color-6 hover:text-color-2" onClick={handleClick}>{recipe.name}</h3>
