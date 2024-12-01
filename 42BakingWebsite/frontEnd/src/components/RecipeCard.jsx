@@ -1,52 +1,44 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-// Filled heart icon (favorited)
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const RecipeCard = ({ recipe }) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteId, setFavoriteId] = useState(null);
+  const navigate = useNavigate();
 
-  const [favoriteId, setFavoriteId] = useState();
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+  // Function to handle adding the recipe to favorites
+  const handleAddToFavorites = async () => {
+    setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+      console.log(isFavorite);
 
-    if(isFavorite) {
-        favoriteId = recipe.Id;
-    }
-  };
-
-  const handleAddToFavorites = async (recipeName) => {
     try {
       // POST request to add the recipe to favorites
-      const response = await fetch('http://localhost:8080/student/addfavoriterecipe', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/recipes/addfavoriterecipe", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          recipeName,    // The name of the recipe being added to favorites
+          recipeName: recipe.name, // Pass the recipe name to the backend
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);  // Log success message from the backend
-        setIsFavorite(true); // Mark as favorite
+        console.log("Recipe added to favorites:", data);  // Log success message from the backend
+        setIsFavorite(true); // Mark as favorite after successful request
       } else {
-        console.error('Error:', response.statusText);
+        console.error("Error adding to favorites:", response.statusText);
       }
     } catch (error) {
-      console.error('Network error:', error);
+      console.error("Network error:", error);
     }
   };
 
-  const navigate = useNavigate();
-
   // Function to navigate to the recipe detail page
   const handleClick = () => {
-    navigate(`/recipe/${recipe.id}`);
+    navigate(`/recipe/id/${recipe.id}`);
   };
 
   // Function to render stars based on the rating
@@ -64,7 +56,7 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <div className="relative p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-all">
-      <div><button>Favorite</button></div>
+      <div><button onClick={handleAddToFavorites(recipe.name)}>Favorite</button></div>
 
 
       <h3 className="font-poppins cursor-pointer text-xl font-bold text-color-6 hover:text-color-2" onClick={handleClick}>{recipe.name}</h3>
@@ -73,7 +65,7 @@ const RecipeCard = ({ recipe }) => {
       </div>
       <div className="mt-4">
           <h3 className="font-poppins text-lg font-medium text-color-6">Ingredients:</h3>
-          <p>Ingredients: {recipe.ingredients}</p>
+          <p className="text-color-6 font-poppins">{recipe.ingredients}</p>
         </div>
 
        

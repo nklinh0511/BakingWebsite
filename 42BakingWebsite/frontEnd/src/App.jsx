@@ -27,12 +27,12 @@ function App() {
         
         <Route
           path="/login"
-          element={<LogIn onLogin={handleLogin} />} // Login page will not show NavBar
+          element={<LogIn onLogin={handleLogin} alreadyReg={true} />} // Login page will not show NavBar
         />
         
         <Route
           path="/signup"
-          element={<LogIn onLogin={handleLogin} />} // Sign Up page will not show NavBar
+          element={<LogIn onLogin={handleLogin} alreadyReg={false} />} // Sign Up page will not show NavBar
         />
         
         {/* Protect /recipes route */}

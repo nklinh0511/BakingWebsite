@@ -9,7 +9,7 @@ const RecipeDetail = () => {
 
   // Fetch the recipe details based on the ID from the URL
   useEffect(() => {
-    fetch(`http://localhost:8080/recipes/${id}`)
+    fetch(`http://localhost:8080/recipes/id/${id}`)
       .then(response => response.json())
       .then(data => {
         setRecipe(data);
@@ -28,7 +28,7 @@ const RecipeDetail = () => {
     setComments(newComments);
 
     // Send the new comment to the server (optional, for persistence)
-    fetch(`http://localhost:8080/recipes/${id}/comments`, {
+    fetch(`http://localhost:8080/recipes/id/${id}/comments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const RecipeDetail = () => {
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Add a comment..."
           />
-          <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+          <button type="submit" className="mt-2 px-4 py-2 bg-color-7 text-white rounded-md hover:bg-color-7">
             Add Comment
           </button>
         </form>
