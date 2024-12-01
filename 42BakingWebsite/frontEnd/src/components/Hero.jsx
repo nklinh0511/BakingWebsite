@@ -2,7 +2,10 @@ import backgroundImg from "../assets/image/heroBackground.jpg"
 import AddRecipes from "./AddRecipes"
 import NavBar from "./NavBar"
 import Ratings from "./Ratings"
-import SearchBox from "./SearchBox"
+import RecipeCard from "./RecipeCard"
+import ViewRecipes from "./ViewRecipes"
+
+
 
 const Hero = () => {
   return (
@@ -17,6 +20,8 @@ const Hero = () => {
 
       <div>
          <AddRecipes />
+
+         <ViewRecipes />
 
       </div>
     </div>

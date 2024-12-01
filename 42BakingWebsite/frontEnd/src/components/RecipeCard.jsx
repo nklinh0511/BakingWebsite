@@ -1,34 +1,63 @@
-import React from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { HeartIcon } from '@heroicons/react/24/outline';  // Outlined heart icon (unfavorited)
+import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid'; // Filled heart icon (favorited)
+
 
 const RecipeCard = ({ recipe }) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+  };
+
+  const navigate = useNavigate();
+
+  // Function to navigate to the recipe detail page
+  const handleClick = () => {
+    navigate(`/recipe/${recipe.id}`);
+  };
+
+  // Function to render stars based on the rating
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars.push(<span key={i} className="text-yellow-500">★</span>);  // Filled star
+      } else {
+        stars.push(<span key={i} className="text-gray-300">★</span>);  // Empty star
+      }
+    }
+    return stars;
+  };
+
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white">
-      <img className="w-full h-64 object-cover" src={recipe.image} alt={recipe.title} />
-      <div className="p-4">
-        <h2 className="text-2xl font-semibold text-gray-800">{recipe.title}</h2>
-        <p className="text-sm text-gray-500 mt-1">{recipe.description}</p>
-        <div className="mt-4">
-          <h3 className="text-lg font-medium text-gray-700">Ingredients:</h3>
-          <ul className="list-inside list-disc text-gray-600 text-sm">
+    <div className="relative p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-all">
+         {/* Favorite Icon */}
+         <div className="mt-0 mr-3 flex right-1 absolute">
+          <button onClick={toggleFavorite} aria-label="Toggle Favorite">
+            {isFavorite ? (
+              <SolidHeartIcon className="w-6 h-6 text-color-5" />
+            ) : (
+              <HeartIcon className="w-6 h-6 text-color-5 hover:text-color-2 transition-colors duration-200" />
+            )}
+          </button>
+        </div>
+
+      <h3 className="font-poppins cursor-pointer text-xl font-bold text-color-6 hover:text-color-2" onClick={handleClick}>{recipe.title}</h3>
+      <div className="flex items-center space-x-1">
+        {renderStars(recipe.rating)} {/* Show stars based on rating */}
+      </div>
+      <div className="mt-4">
+          <h3 className="font-poppins text-lg font-medium text-color-6">Ingredients:</h3>
+          <ul className="font-poppins list-inside list-disc text-color-6 text-sm">
             {recipe.ingredients.map((ingredient, index) => (
               <li key={index}>{ingredient}</li>
             ))}
           </ul>
         </div>
-        <div className="mt-4">
-          <h3 className="text-lg font-medium text-gray-700">Instructions:</h3>
-          <ol className="list-inside list-decimal text-gray-600 text-sm">
-            {recipe.instructions.map((instruction, index) => (
-              <li key={index}>{instruction}</li>
-            ))}
-          </ol>
-        </div>
-        <div className="mt-4">
-          <p className="text-sm text-gray-600">
-            <strong>Cook Time:</strong> {recipe.cookTime} minutes
-          </p>
-        </div>
-      </div>
+
+       
     </div>
   );
 };

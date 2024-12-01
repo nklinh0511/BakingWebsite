@@ -35,54 +35,82 @@ function RecipeForm() {
 
   // Fetch the list of all recipes when the component mounts
   useEffect(() => {
-    fetch('http://localhost:8080/recipes/getAllRecipes')  // Assuming you have an endpoint to get all recipes
+    fetch('http://localhost:8080/recipes/getAllRecipes') 
       .then(response => response.json())
       .then(data => setRecipes(data))  // Set state with list of recipes
       .catch(error => console.error('Error fetching recipes:', error));
   }, []);
 
   return (
-    <div>
-      <h2>Add a New Recipe</h2>
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="text" 
-          placeholder="Recipe Name" 
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input 
-          type="text" 
-          placeholder="Ingredients (comma separated)" 
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-        />
-        <button type="submit">Add Recipe</button>
+    <div className="max-w-4xl mx-auto p-6 bg-color-5 shadow-md rounded-3xl my-20 ">
+      {/* Add Recipe Title */}
+      <h2 className="text-3xl font-titan text-center text-white mb-6 drop-shadow-lg">Add a New Recipe</h2>
+
+      {/* Form for adding a new recipe */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Recipe Name */}
+        <div>
+          <label htmlFor="name" className="block text-white font-bold font-poppins text-lg">Recipe Name</label>
+          <input 
+            id="name"
+            type="text" 
+            placeholder="Enter recipe name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="font-poppins w-full p-3 mt-2 border border-color-7 rounded-lg focus:outline-none focus:ring-2 focus:ring-color-4"
+            required
+          />
+        </div>
+
+        {/* Ingredients */}
+        <div>
+          <label htmlFor="ingredients" className="block text-white font-poppins font-bold text-lg">Ingredients (comma separated)</label>
+          <input 
+            id="ingredients"
+            type="text" 
+            placeholder="Enter ingredients"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+            className="font-poppins w-full p-3 mt-2 border border-color-7 rounded-lg focus:outline-none focus:ring-2 focus:ring-color-4"
+            required
+          />
+        </div>
+
+        {/* Submit Button */}
+        <div>
+          <button 
+            type="submit" 
+            className="font-titan text-xl w-full py-3 bg-color-4 text-color-6 rounded-lg hover:bg-color-7 hover:text-white transition duration-200"
+          >
+            Add Recipe
+          </button>
+        </div>
       </form>
 
       {/* Display the newly added recipe */}
       {recipe && (
-        <div>
-          <h3>Recipe Added:</h3>
-          <p>Name: {recipe.name}</p>
-          <p>Ingredients: {recipe.ingredients}</p>
+        <div className="mt-8 p-4 bg-green-100 border border-green-300 rounded-lg">
+          <h3 className="text-lg font-semibold text-green-700">Recipe Added Successfully</h3>
+          <p className="text-gray-800"><strong>Name:</strong> {recipe.name}</p>
+          <p className="text-gray-800"><strong>Ingredients:</strong> {recipe.ingredients}</p>
         </div>
       )}
 
-      {/* Display all recipes */}
-      <h3>All Recipes</h3>
-      <div>
+      {/* Display all recipes 
+      <h3 className="text-2xl font-semibold text-gray-800 mt-12 mb-4">All Recipes</h3>
+      <div className="space-y-6">
         {recipes.length > 0 ? (
           recipes.map(recipe => (
-            <div key={recipe.id}>
-              <h4>{recipe.name}</h4>
-              <p>{recipe.ingredients}</p>
+            <div key={recipe.id} className="p-4 bg-gray-100 border border-gray-300 rounded-lg">
+              <h4 className="text-xl font-semibold text-gray-800">{recipe.name}</h4>
+              <p className="text-gray-700">{recipe.ingredients}</p>
             </div>
           ))
         ) : (
-          <p>No recipes available.</p>
+          <p className="text-gray-500">No recipes available.</p>
         )}
       </div>
+      */}
     </div>
   );
 }
