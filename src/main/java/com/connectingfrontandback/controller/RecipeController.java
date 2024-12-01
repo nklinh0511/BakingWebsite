@@ -11,6 +11,7 @@ import com.connectingfrontandback.service.APIService;
 import com.connectingfrontandback.service.RecipeService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/recipes")
@@ -64,13 +65,36 @@ public class RecipeController {
         return recipeService.getAllRecipes();
     }
 
+    // Get recipe by ID
     @GetMapping("/id/{id}")
     public ResponseEntity<?> getRecipeById(@PathVariable long id) {
-        Recipe recipe = recipeService.getRecipeById(id);
-        if (recipe != null) {
-            return ResponseEntity.ok(recipe); // Return the recipe if found
+        Optional<Recipe> recipe = recipeService.getRecipeById(id);
+        if (recipe.isPresent()) {
+            return ResponseEntity.ok(recipe.get());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(false, "Recipe not found"));
+    }
+
+    // Add a comment to a recipe
+    @PostMapping("/id/{id}/addcomment")
+    public ResponseEntity<?> addComment(@PathVariable long id, @RequestBody String comment) {
+        boolean isAdded = recipeService.addCommentToRecipe(id, comment);
+        if (isAdded) {
+            return ResponseEntity.ok(new ApiResponse(true, "Comment added successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(false, "Failed to add comment"));
+    }
+
+    // Get all comments of a recipe by its ID
+    @GetMapping("/id/{id}/comments")
+    public ResponseEntity<?> getCommentsByRecipeId(@PathVariable long id) {
+        String comments = recipeService.getComments(id);
+        if (comments != null && !comments.isEmpty()) {
+            return ResponseEntity.ok(comments); // Return the comments as a single string
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse(false, "No comments found for the recipe"));
     }
 }

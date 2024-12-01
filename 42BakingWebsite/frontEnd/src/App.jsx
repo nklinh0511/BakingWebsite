@@ -42,7 +42,7 @@ function App() {
         />
 
         {/* Recipe detail route */}
-        <Route path="/recipe/:id" element={<RecipeDetail />} />
+        <Route path="/recipe/id/:id" element={<RecipeDetail />} />
       </Routes>
     </Router>
   );

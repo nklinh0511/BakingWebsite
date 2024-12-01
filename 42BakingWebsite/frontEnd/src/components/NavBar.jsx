@@ -13,7 +13,7 @@ const NavBar = ({ isLoggedIn, onLogin, onLogout }) => {
   console.log(isLoggedIn);
 
   return (
-    <div className="fixed top-0 left-0 w-full max-w-full z-50">
+    <div className="fixed top-0 left-0 w-full max-w-full z-50 bg-color-3">
       <div className="flex items-center my-6 px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <Link to="/" className="block w-[12rem] xl:mr-8 text-color-2 font-titan text-2xl">
           42Baking

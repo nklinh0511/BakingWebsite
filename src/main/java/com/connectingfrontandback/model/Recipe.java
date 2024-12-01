@@ -7,14 +7,19 @@ import javax.persistence.Id;
 
 @Entity
 public class Recipe {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
+    private int rating;
     private String ingredients;
 
-    // Getters and Setters
+    // Change comments to a single String field (e.g., a concatenation of comments)
+    private String comments;
+
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -31,11 +36,27 @@ public class Recipe {
         this.name = name;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
     public String getIngredients() {
         return ingredients;
     }
 
     public void setIngredients(String ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }

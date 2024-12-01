@@ -1,6 +1,8 @@
 package com.connectingfrontandback.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.connectingfrontandback.model.Recipe;
@@ -15,7 +17,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     Optional<Recipe> findById(long id);
 
-    // Use LIKE to match any ingredient in the list
     List<Recipe> findByIngredientsContainingIgnoreCase(String ingredient);
 
 }

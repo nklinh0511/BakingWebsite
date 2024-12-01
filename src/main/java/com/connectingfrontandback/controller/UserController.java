@@ -55,17 +55,37 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest, HttpSession session) {
 
-        // Called from loginService
+        // Validate login credentials
         Optional<User> user = loginService.validateLogin(loginRequest.getUsername(), loginRequest.getPassword());
 
         if (user.isPresent()) {
-
-            // Set the username in the session after successful login
+            // Store the username in the session upon successful login
             session.setAttribute("username", loginRequest.getUsername());
+
+            // Log the session creation for debugging purposes (if needed)
+            System.out.println("Login successful for user: " + loginRequest.getUsername());
+            System.out.println("Session created with ID: " + session.getId());
+
+            // Respond with a success message
             return ResponseEntity.ok(Map.of("message", "Login successful!"));
         } else {
-            return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password."));
+            // Log the failed login attempt for debugging purposes (optional)
+            System.out.println("Failed login attempt for username: " + loginRequest.getUsername());
+
+            // Respond with a 401 Unauthorized status
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Invalid username or password."));
         }
+    }
+
+    @GetMapping("/checkSession")
+    public ResponseEntity<Map<String, String>> checkSession(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username != null) {
+            return ResponseEntity.ok(Map.of("message", "Session active", "username", username));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "No active session"));
     }
 
     @GetMapping("/getfavoriterecipes")
@@ -97,7 +117,5 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(false, "Failed to add recipe"));
     }
-
-   
 
 }

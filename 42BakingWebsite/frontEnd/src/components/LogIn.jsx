@@ -21,6 +21,7 @@ const LogIn = ({ onLogin, alreadyReg }) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(userData),
+                    credentials: 'include', 
                 });
                 if (response.ok) {
                     const data = await response.json();

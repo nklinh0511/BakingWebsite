@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import { useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
 import SearchToggle from './SearchToggle';
 
@@ -18,6 +19,7 @@ const SearchBox = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [searchMode, setSearchMode] = useState('name');
+  const navigate = useNavigate();
 
   const handleSearchModeChange = (e) => {
     setSearchMode(e.target.value);
@@ -33,6 +35,9 @@ const SearchBox = () => {
   const handleSelectResult = (recipe) => {
     setInput(recipe.name); // Optionally, set the input field with the selected result
     setResults([]); // Clear results after selection
+
+      navigate(`/recipe/id/${recipe.id}`);
+
   };
 
   const fetchRecipes = async(input) => {
@@ -86,18 +91,22 @@ const SearchBox = () => {
         {error && <p>Error: {error}</p>}
 
       </div>
-      <div >
-      <div className="dropdown bg-white absolute width-full">
-        {Array.isArray(results) && results.length > 0 && (
-          <ul>
-            {results.map((recipe) => (
-              <li key={recipe.id} onClick={() => handleSelectResult(recipe)}>
-                {recipe.name}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <div className="width-full">
+      <div className="bg-white absolute w-full border border-gray-300 rounded-md shadow-lg mt-1 z-10">
+  {Array.isArray(results) && results.length > 0 && (
+    <ul className="max-h-60 overflow-y-auto">
+      {results.map((recipe) => (
+        <li
+          key={recipe.id}
+          onClick={() => handleSelectResult(recipe)}
+          className="font-poppins text-color-6 px-4 py-2 cursor-pointer hover:bg-gray-200"
+        >
+          {recipe.name}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
       {Array.isArray(results) && results.length === 0 && !loading && !error && input && (
         <p>No results found</p>

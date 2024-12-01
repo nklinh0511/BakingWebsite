@@ -2,41 +2,57 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 const RecipeDetail = () => {
-  const { id } = useParams();  // Get recipe ID from the URL
+  const { id } = useParams(); // Get recipe ID from the URL
   const [recipe, setRecipe] = useState(null);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState([]); // Treat comments as an array
   const [newComment, setNewComment] = useState('');
 
   // Fetch the recipe details based on the ID from the URL
   useEffect(() => {
     fetch(`http://localhost:8080/recipes/id/${id}`)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setRecipe(data);
-        setComments(data.comments || []);  // Set comments if available
+
+        // Extract only the comment text from the JSON-like structure
+        const rawComments = data.comments || '';
+        try {
+          // Parse JSON-like strings if needed
+          const parsedComments = rawComments
+            .split('\n')
+            .map((comment) => {
+              const parsed = JSON.parse(comment);
+              return parsed.comments || ''; // Extract the "comments" field
+            });
+          setComments(parsedComments);
+        } catch {
+          // If parsing fails, treat as plain text
+          setComments(rawComments.split('\n'));
+        }
       })
-      .catch(err => console.error('Error fetching recipe:', err));
+      .catch((err) => console.error('Error fetching recipe:', err));
   }, [id]);
 
   // Handle adding a new comment
   const handleAddComment = (e) => {
     e.preventDefault();
 
-    if (!newComment.trim()) return;  // Don't add empty comments
+    if (!newComment.trim()) return; // Don't add empty comments
 
-    const newComments = [...comments, { text: newComment }];
-    setComments(newComments);
+    // Append the new comment to the existing comments
+    const updatedComments = [...comments, newComment];
+    setComments(updatedComments);
 
-    // Send the new comment to the server (optional, for persistence)
-    fetch(`http://localhost:8080/recipes/id/${id}/comments`, {
+    // Send the new comment to the server
+    fetch(`http://localhost:8080/recipes/id/${id}/addcomment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ comment: newComment }),
-    }).catch(err => console.error('Error adding comment:', err));
+      body: JSON.stringify({ comments: updatedComments.join('\n') }),
+    }).catch((err) => console.error('Error adding comment:', err));
 
-    setNewComment('');
+    setNewComment(''); // Clear the comment field
   };
 
   if (!recipe) return <p>Loading...</p>;
@@ -47,7 +63,9 @@ const RecipeDetail = () => {
       <div className="flex items-center space-x-2">
         <div className="text-yellow-500">
           {Array.from({ length: 5 }, (_, i) => (
-            <span key={i} className={i < recipe.rating ? 'text-yellow-500' : 'text-gray-300'}>★</span>
+            <span key={i} className={i < recipe.rating ? 'text-yellow-500' : 'text-gray-300'}>
+              ★
+            </span>
           ))}
         </div>
         <p className="text-sm text-gray-500">({recipe.rating} stars)</p>
@@ -69,13 +87,11 @@ const RecipeDetail = () => {
           </button>
         </form>
 
-        <ul className="mt-4 space-y-2">
+        <div className="mt-4">
           {comments.map((comment, index) => (
-            <li key={index} className="border-b pb-2">
-              <p>{comment.text}</p>
-            </li>
+            <p key={index}>{comment}</p>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );
