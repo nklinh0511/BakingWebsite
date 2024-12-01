@@ -1,29 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RecipeCard from './RecipeCard';
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
-
-const sampleRecipes = [
-  { title: 'Spaghetti Bolognese', ingredients: ['200g Spaghetti', '100g Ground beef', '1 onion', '2 cloves garlic', 'Tomato sauce', 'Oregano'] },
-  { title: 'Chicken Alfredo', ingredients: ['200g Chicken', '200g Pasta', 'Cream', 'Garlic', 'Parmesan'] },
-  { title: 'Vegetable Stir Fry', ingredients: ['Broccoli', 'Carrots', 'Bell peppers', 'Soy sauce', 'Ginger'] },
-  { title: 'Beef Tacos', ingredients: ['Ground beef', 'Taco shells', 'Lettuce', 'Tomato', 'Cheese'] },
-  { title: 'Pancakes', ingredients: ['Flour', 'Eggs', 'Milk', 'Baking powder', 'Butter'] },
-  { title: 'Grilled Cheese Sandwich', ingredients: ['Bread', 'Cheese', 'Butter'] },
-  { title: 'Caesar Salad', ingredients: ['Lettuce', 'Croutons', 'Parmesan', 'Caesar dressing'] },
-  { title: 'Fried Rice', ingredients: ['Rice', 'Egg', 'Peas', 'Carrot', 'Soy sauce'] },
-  { title: 'Lemon Chicken', ingredients: ['Chicken breast', 'Lemon', 'Garlic', 'Thyme'] },
-  { title: 'Spaghetti Carbonara', ingredients: ['Spaghetti', 'Bacon', 'Eggs', 'Parmesan'] },
-  { title: 'Beef Stew', ingredients: ['Beef', 'Potatoes', 'Carrots', 'Onions', 'Broth'] },
-  { title: 'Fish Tacos', ingredients: ['Fish fillets', 'Tortillas', 'Lime', 'Cabbage', 'Salsa'] },
-  { title: 'Chocolate Cake', ingredients: ['Flour', 'Cocoa powder', 'Sugar', 'Eggs', 'Butter'] },
-  { title: 'Vegetable Soup', ingredients: ['Carrots', 'Potatoes', 'Celery', 'Onions', 'Tomatoes'] },
-  { title: 'Chicken Curry', ingredients: ['Chicken', 'Curry powder', 'Coconut milk', 'Rice'] },
-  { title: 'Tacos', ingredients: ['Taco shells', 'Ground beef', 'Cheese', 'Lettuce', 'Tomato'] }
-];
-
 const ViewRecipes = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [recipes, setRecipes] = useState([]);  // State to store recipes
+  const [loading, setLoading] = useState(true); // State for loading status
+  const [error, setError] = useState(null);     // State for errors
   const itemsPerPage = 15;
   const totalPages = Math.ceil(sampleRecipes.length / itemsPerPage);
 
@@ -56,11 +39,43 @@ const ViewRecipes = () => {
     pageNumbers.push(i);
   }
 
+  useEffect(() => {
+    // Fetch recipes from your backend API
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/recipes/getAllRecipes');
+        
+        // Check if the response is ok
+        if (!response.ok) {
+          throw new Error('Failed to fetch recipes');
+        }
+
+        const data = await response.json();
+        setRecipes(data); // Set the recipes state with the fetched data
+      } catch (err) {
+        setError(err.message); // Handle errors if the fetch fails
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchRecipes(); // Call the function to fetch data when the component mounts
+  }, []); // Empty dependency array to run this effect only once when the component mounts
+
+  // Render loading, error, or recipes based on the state
+  if (loading) {
+    return <div className="text-center">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">Error: {error}</div>;
+  }
+
   return (
     <div className="container mx-auto p-4">
       {/* Recipe Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentRecipes.map((recipe, index) => (
+        {recipes.map((recipe, index) => (
           <RecipeCard key={index} recipe={recipe} />
         ))}
       </div>
