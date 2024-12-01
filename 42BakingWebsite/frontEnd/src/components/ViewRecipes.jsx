@@ -9,6 +9,7 @@ const ViewRecipes = () => {
   const itemsPerPage = 15;  // Number of recipes per page
 
   // Fetch recipes when the component mounts
+
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -81,9 +82,11 @@ const ViewRecipes = () => {
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-l-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500"
+          className="px-4 py-2 bg-color-7 text-white font-semibold rounded-l-lg hover:bg-color-7 disabled:bg-gray-300 disabled:text-gray-500"
         >
-          Previous
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
         </button>
 
         {/* Page Numbers */}
@@ -92,7 +95,7 @@ const ViewRecipes = () => {
             <button
               key={number}
               onClick={() => handlePageChange(number)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold ${currentPage === number ? 'bg-color-7 text-white' : 'bg-gray-300 text-gray-700'} hover:bg-blue-400 transition-colors duration-300`}
+              className={`px-4 py-2 rounded-full text-sm font-semibold ${currentPage === number ? 'bg-color-7 text-white' : 'bg-gray-300 text-gray-700'} hover:bg-color-7 transition-colors duration-300`}
             >
               {number}
             </button>
@@ -102,9 +105,11 @@ const ViewRecipes = () => {
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-color-7 text-white font-semibold rounded-r-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500"
+          className="px-4 py-2 bg-color-7 text-white font-semibold rounded-r-lg hover:bg-color-7 disabled:bg-gray-300 disabled:text-gray-500"
         >
-          Next
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+          </svg>
         </button>
       </div>
     </div>

@@ -33,14 +33,6 @@ function RecipeForm() {
       .catch((error) => console.error('Error:', error));
   };
 
-  // Fetch the list of all recipes when the component mounts
-  useEffect(() => {
-    fetch('http://localhost:8080/recipes/getAllRecipes') 
-      .then(response => response.json())
-      .then(data => setRecipes(data))  // Set state with list of recipes
-      .catch(error => console.error('Error fetching recipes:', error));
-  }, []);
-
   return (
     <div className="max-w-4xl mx-auto p-6 bg-color-5 shadow-md rounded-3xl my-20 ">
       {/* Add Recipe Title */}
@@ -95,22 +87,6 @@ function RecipeForm() {
           <p className="text-gray-800"><strong>Ingredients:</strong> {recipe.ingredients}</p>
         </div>
       )}
-
-      {/* Display all recipes 
-      <h3 className="text-2xl font-semibold text-gray-800 mt-12 mb-4">All Recipes</h3>
-      <div className="space-y-6">
-        {recipes.length > 0 ? (
-          recipes.map(recipe => (
-            <div key={recipe.id} className="p-4 bg-gray-100 border border-gray-300 rounded-lg">
-              <h4 className="text-xl font-semibold text-gray-800">{recipe.name}</h4>
-              <p className="text-gray-700">{recipe.ingredients}</p>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">No recipes available.</p>
-        )}
-      </div>
-      */}
     </div>
   );
 }
