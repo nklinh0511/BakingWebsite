@@ -72,7 +72,7 @@ const SearchBox = () => {
                 value={input}
                 onChange={handleInputChange}
                 placeholder="Search recipes by name or by ingredients"
-                className="font-poppins bg-transparent border-none ml-[5px] w-96 px-2 py-1 text-color-6"
+                className="relative font-poppins bg-transparent border-none ml-[5px] w-96 px-2 py-1 text-color-6"
             />
             <button type="submit" className="font-bold font-poppins ">Search</button>
 

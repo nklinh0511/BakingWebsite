@@ -1,12 +1,10 @@
-import {useState} from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
-const LogIn = ({alreadyReg}) => {
-    const [isLogin, setIsLogin] = useState(alreadyReg);
+const LogIn = ({ onLogin }) => {
+    const [isLogin, setIsLogin] = useState(false);  // Start with Login form by default
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -14,6 +12,7 @@ const LogIn = ({alreadyReg}) => {
 
         try {
             if (!isLogin) {
+                // Handle registration
                 const response = await fetch('http://localhost:8080/student/add', {
                     method: 'POST',
                     headers: {
@@ -24,11 +23,12 @@ const LogIn = ({alreadyReg}) => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log('User created:', data);
-                    navigate('/'); 
+                    onLogin(); // Trigger login upon successful registration
                 } else {
                     console.error('Error:', response.statusText);
                 }
             } else {
+                // Handle login
                 const response = await fetch('http://localhost:8080/student/login', {
                     method: 'POST',
                     headers: {
@@ -39,7 +39,7 @@ const LogIn = ({alreadyReg}) => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log("Logged In!");
-                    navigate('/'); 
+                    onLogin(); // Trigger login upon successful login
                 } else {
                     console.error('Error:', response.statusText);
                 }
@@ -98,4 +98,4 @@ const LogIn = ({alreadyReg}) => {
     );
 }
 
-export default LogIn
+export default LogIn;
