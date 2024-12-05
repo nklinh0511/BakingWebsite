@@ -10,14 +10,42 @@ public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // recipe id
 
-    private String name;
-    private int rating;
-    private String ingredients;
+    private String name; // name of recipe
 
-    // Change comments to a single String field (e.g., a concatenation of comments)
-    private String comments;
+    private String ingredients; // ingredients in a recipe
+
+    private String comments;// all comments for a recupe
+
+    private int rating; // Average rating rounded to the nearest integer
+    private int totalRating; // Sum of all ratings
+    private int ratingCount; // Number of ratings
+
+    // Getters and setters
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public int getTotalRating() {
+        return totalRating;
+    }
+
+    public void setTotalRating(int totalRating) {
+        this.totalRating = totalRating;
+    }
+
+    public int getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(int ratingCount) {
+        this.ratingCount = ratingCount;
+    }
 
     // Getters and setters
     public Long getId() {
@@ -36,14 +64,6 @@ public class Recipe {
         this.name = name;
     }
 
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
     public String getIngredients() {
         return ingredients;
     }
@@ -58,5 +78,14 @@ public class Recipe {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    //Calculates total Rating
+    public void calculateOverallRating() {
+        if (ratingCount > 0) {
+            this.rating = totalRating / ratingCount; // Calculate average rating
+        } else {
+            this.rating = 0; // Default to 0 if there are no ratings
+        }
     }
 }

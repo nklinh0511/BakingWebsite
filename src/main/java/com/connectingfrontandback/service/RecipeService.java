@@ -1,20 +1,11 @@
 package com.connectingfrontandback.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import com.connectingfrontandback.model.Recipe;
-import com.connectingfrontandback.repository.ApiResponse;
 import com.connectingfrontandback.repository.RecipeRepository;
 
 @Service
@@ -62,6 +53,46 @@ public class RecipeService {
         return ""; // Return an empty string if no comments exist
     }
 
+    public boolean addRating(long id, int rating) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+
+        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+        if (recipeOptional.isPresent()) {
+            Recipe recipe = recipeOptional.get();
+
+            // Update total ratings and count
+            int newTotalRating = recipe.getTotalRating() + rating;
+            int newRatingCount = recipe.getRatingCount() + 1;
+
+            recipe.setTotalRating(newTotalRating);
+            recipe.setRatingCount(newRatingCount);
+
+            // Calculate and update the average rating as an integer
+            int averageRating = Math.round((float) newTotalRating / newRatingCount);
+            recipe.setRating(averageRating);
+
+            recipeRepository.save(recipe);
+            return true;
+        }
+        return false;
+    }
+
+    public int getOverallRating(long id) {
+        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+        if (recipeOptional.isPresent()) {
+            return recipeOptional.get().getRating();
+        }
+        return 0;
+    }
+
+    public boolean addCommentAndRating(long id, String comment, int rating) {
+        boolean commentAdded = addCommentToRecipe(id, comment);
+        boolean ratingAdded = addRating(id, rating);
+        return commentAdded && ratingAdded;
+    }
+
     public boolean addCommentToRecipe(long id, String comment) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(id);
         if (recipeOptional.isPresent()) {
@@ -81,4 +112,24 @@ public class RecipeService {
         }
         return false;
     }
+
+    public boolean addRatingToRecipe(long id, int rating) {
+        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+        if (recipeOptional.isPresent()) {
+            Recipe recipe = recipeOptional.get();
+
+            // Update totalRating and ratingCount
+            recipe.setTotalRating(recipe.getTotalRating() + rating);
+            recipe.setRatingCount(recipe.getRatingCount() + 1);
+
+            // Call the method to calculate the overall rating
+            recipe.calculateOverallRating();
+
+            // Save the updated recipe
+            recipeRepository.save(recipe);
+            return true;
+        }
+        return false;
+    }
+
 }

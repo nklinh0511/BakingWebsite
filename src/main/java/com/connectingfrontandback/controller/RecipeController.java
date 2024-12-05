@@ -61,7 +61,7 @@ public class RecipeController {
     }
 
     @GetMapping("/getAllRecipes")
-    public List<Recipe> getMethodName() {
+    public List<Recipe> getAllRecipesss() {
         return recipeService.getAllRecipes();
     }
 
@@ -97,4 +97,62 @@ public class RecipeController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(false, "No comments found for the recipe"));
     }
+
+    // ** New: Add a rating to a recipe **
+    @PostMapping("/id/{id}/addRating")
+    public ResponseEntity<?> addRatingToRecipe(@PathVariable long id, @RequestParam int rating) {
+        if (rating < 1 || rating > 5) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "Rating must be between 1 and 5"));
+        }
+
+        boolean isAdded = recipeService.addRatingToRecipe(id, rating);
+        if (isAdded) {
+            return ResponseEntity.ok(new ApiResponse(true, "Rating added successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(false, "Failed to add rating"));
+    }
+
+    // Get the average rating of a recipe 
+    @GetMapping("/id/{id}/averageRating")
+    public ResponseEntity<?> getAverageRatingForRecipe(@PathVariable long id) {
+        Optional<Recipe> recipe = recipeService.getRecipeById(id);
+        if (recipe.isPresent()) {
+            double averageRating = recipe.get().getRating();
+            return ResponseEntity.ok(averageRating);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse(false, "Recipe not found"));
+    }
+
+    //If you want overal ratings from every recipe ?
+    // @GetMapping("/averageWebsiteRating")
+    // public ResponseEntity<?> getOverallWebsiteRating() {
+    // List<Recipe> allRecipes = recipeService.getAllRecipes(); // Get all recipes
+    // from the database
+    // if (allRecipes.isEmpty()) {
+    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    // .body(new ApiResponse(false, "No recipes found"));
+    // }
+
+    // double totalRating = 0;
+    // int totalRatingCount = 0;
+
+    // // Iterate through all recipes and calculate the total ratings and the count
+    // of
+    // // ratings
+    // for (Recipe recipe : allRecipes) {
+    // // Calculate the overall rating for each recipe
+    // recipe.calculateOverallRating(); // Ensure this updates the recipe's rating
+    // totalRating += recipe.getRating(); // Add this recipe's rating to the total
+    // totalRatingCount++; // Increment the number of recipes that contributed a
+    // rating
+    // }
+
+    // // Calculate the average rating for all recipes
+    // double averageRating = totalRating / totalRatingCount;
+
+    // return ResponseEntity.ok(averageRating); // Return the overall average rating
+    // }
 }
