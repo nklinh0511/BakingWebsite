@@ -13,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.connectingfrontandback.model.AddRecipeRequest;
 import com.connectingfrontandback.model.FavoriteRecipes;
 import com.connectingfrontandback.model.Recipe;
 import com.connectingfrontandback.model.User;
+import com.connectingfrontandback.model.AddFavoriteRequest;
 import com.connectingfrontandback.repository.ApiResponse;
 import com.connectingfrontandback.service.LoginService;
 import com.connectingfrontandback.service.UserService;
@@ -104,18 +106,29 @@ public class UserController {
     }
 
     @PostMapping("/addfavoriterecipe")
-    public ResponseEntity<?> addFavoriteRecipe(@RequestBody AddRecipeRequest addRecipeRequest, HttpSession session) {
-        String username = (String) session.getAttribute("username");
+    public ResponseEntity<?> addFavoriteRecipe(@RequestBody AddFavoriteRequest addFavoriteRequest,
+            HttpSession session) {
+        String username = addFavoriteRequest.getUser();
         if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiResponse(false, "User not logged in"));
         }
 
-        if (studentService.addFavoriteRecipe(username, addRecipeRequest.getRecipeName())) {
+        if (studentService.addFavoriteRecipe(username, addFavoriteRequest.getRecipeName())) {
             return ResponseEntity.ok(new ApiResponse(true, "Recipe added successfully"));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(false, "Failed to add recipe"));
+    }
+
+    // Endpoint to get favorite recipes for a user
+    @GetMapping("/favorites")
+    public ResponseEntity<List<Recipe>> getFavoriteRecipes(@RequestParam String username) {
+        List<Recipe> favoriteRecipes = studentService.getFavoriteRecipes(username);
+        if (favoriteRecipes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // No content if no favorites
+        }
+        return ResponseEntity.ok(favoriteRecipes);
     }
 
 }

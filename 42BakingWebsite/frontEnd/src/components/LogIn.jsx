@@ -27,6 +27,8 @@ const LogIn = ({ onLogin, alreadyReg }) => {
                     const data = await response.json();
                     console.log('User created:', data);
                     navigate('/', { state: { username } });
+                    localStorage.setItem('username', userData.username);
+                    console.log(userData.username);
       
                     onLogin(); // Trigger login upon successful registration
                    
@@ -46,6 +48,8 @@ const LogIn = ({ onLogin, alreadyReg }) => {
                     const data = await response.json();
                     console.log("Logged In!");
                     navigate('/', { state: { username } });
+                    localStorage.setItem('username', userData.username);
+                    console.log(userData.username);
 
                     onLogin(); // Trigger login upon successful login
                     

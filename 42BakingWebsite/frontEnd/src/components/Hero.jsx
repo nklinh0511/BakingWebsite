@@ -20,6 +20,10 @@ const Hero = ({isLoggedIn}) => {
         <h2 className="absolute z-50 top-1/2 left-2/4 m-0 p-0 w-full text-xl font-poppins text-color-6">Explore recipes by name or by ingredients</h2>
       </div>
 
+      <div>
+        
+      </div>
+
 
       <div>
         {!isLoggedIn ? (

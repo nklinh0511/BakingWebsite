@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import StarRating from './Ratings';
 
 const RecipeDetail = () => {
   const { id } = useParams(); // Get recipe ID from the URL
@@ -41,7 +42,6 @@ const RecipeDetail = () => {
 
     // Append the new comment to the existing comments
     const updatedComments = [...comments, newComment];
-    setComments(updatedComments);
 
     // Send the new comment to the server
     fetch(`http://localhost:8080/recipes/id/${id}/addcomment`, {
@@ -49,8 +49,11 @@ const RecipeDetail = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ comments: updatedComments.join('\n') }),
+      body: JSON.stringify({ comments: newComment}),
     }).catch((err) => console.error('Error adding comment:', err));
+
+    
+    setComments(updatedComments);
 
     setNewComment(''); // Clear the comment field
   };
@@ -58,7 +61,7 @@ const RecipeDetail = () => {
   if (!recipe) return <p>Loading...</p>;
 
   return (
-    <div className="p-6">
+    <div className="p-6 font-poppins">
       <h2 className="text-3xl font-bold">{recipe.name}</h2>
       <div className="flex items-center space-x-2">
         <div className="text-yellow-500">
@@ -86,6 +89,8 @@ const RecipeDetail = () => {
             Add Comment
           </button>
         </form>
+
+        <StarRating id={id}/>
 
         <div className="mt-4">
           {comments.map((comment, index) => (

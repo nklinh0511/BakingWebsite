@@ -7,17 +7,21 @@ const RecipeCard = ({ recipe }) => {
   const navigate = useNavigate();
 
 
-  // Function to handle adding the recipe to favorites
-  const handleAddToFavorites = async (recipeName) => {
+  const handleAddToFavorites = async (recipe) => {
     setIsFavorite((prev) => !isFavorite);
-
+    const user = localStorage.getItem("username"); // Retrieve username from session/localStorage if necessary
+    console.log(user);
+  
     fetch('http://localhost:8080/student/addfavoriterecipe', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',  // Ensure the cookie is included in the request
-      body: JSON.stringify({ name: recipeName }),
+      body: JSON.stringify({
+        recipeName: recipe, // Ensure you're passing the recipe name, not the entire recipe object
+        user: user,
+      }),
     })
       .then(response => response.json())
       .then(data => {
@@ -26,7 +30,8 @@ const RecipeCard = ({ recipe }) => {
       .catch(error => {
         console.error('Error adding to favorites:', error);
       });
-  }
+  };
+  
   // Function to navigate to the recipe detail page
   const handleClick = () => {
     navigate(`/recipe/id/${recipe.id}`);
@@ -48,7 +53,7 @@ const RecipeCard = ({ recipe }) => {
   return (
     <div className="relative p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-all">
       <div>
-        <button onClick={handleAddToFavorites}>
+        <button onClick={() => handleAddToFavorites(recipe.name)}>
 
     {isFavorite ? (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-color-2">

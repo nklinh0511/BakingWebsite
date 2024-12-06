@@ -92,15 +92,18 @@ public class RecipeController {
     public ResponseEntity<?> getCommentsByRecipeId(@PathVariable long id) {
         String comments = recipeService.getComments(id);
         if (comments != null && !comments.isEmpty()) {
-            return ResponseEntity.ok(comments); // Return the comments as a single string
+            String[] commentsArray = comments.split("\n"); // Split by newline
+            return ResponseEntity.ok(commentsArray); // Return as an array
         }
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(false, "No comments found for the recipe"));
+
     }
 
     // ** New: Add a rating to a recipe **
     @PostMapping("/id/{id}/addRating")
-    public ResponseEntity<?> addRatingToRecipe(@PathVariable long id, @RequestParam int rating) {
+    public ResponseEntity<?> addRatingToRecipe(@PathVariable long id, @RequestBody int rating) {
         if (rating < 1 || rating > 5) {
             return ResponseEntity.badRequest()
                     .body(new ApiResponse(false, "Rating must be between 1 and 5"));
@@ -114,7 +117,7 @@ public class RecipeController {
                 .body(new ApiResponse(false, "Failed to add rating"));
     }
 
-    // Get the average rating of a recipe 
+    // Get the average rating of a recipe
     @GetMapping("/id/{id}/averageRating")
     public ResponseEntity<?> getAverageRatingForRecipe(@PathVariable long id) {
         Optional<Recipe> recipe = recipeService.getRecipeById(id);
@@ -126,7 +129,7 @@ public class RecipeController {
                 .body(new ApiResponse(false, "Recipe not found"));
     }
 
-    //If you want overal ratings from every recipe ?
+    // If you want overal ratings from every recipe ?
     // @GetMapping("/averageWebsiteRating")
     // public ResponseEntity<?> getOverallWebsiteRating() {
     // List<Recipe> allRecipes = recipeService.getAllRecipes(); // Get all recipes

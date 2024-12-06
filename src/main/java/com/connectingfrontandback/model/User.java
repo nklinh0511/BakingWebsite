@@ -14,7 +14,7 @@ public class User {
     @Id
     private String username;
     private String email;
-    private String favoriteRecipes;
+    public String favoriteRecipes;
 
     public User() {
 
